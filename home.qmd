@@ -1,0 +1,55 @@
+---
+title: "Welcome to this class!"
+format: html
+editor: visual
+---
+
+This website will walk you through the tutorials for the *Introduction to Stata* course of Ecole Polytechnique's Master program. The course has 3 main objectives: (i) know the basics of Stata (ii) manipulate the standard statistical and empirical tools (iii) make appealing output.
+
+> **Practical information**
+>
+> **TA**: [Mateo Moglia](https://mateomoglia.github.io)
+>
+> **Schedule**: 2 sessions of 4 hours. Check Moodle before class in case of any change in classroom.
+>
+> **Required software**: Stata. The software is provided on the lab's computer. The data used in the tutorials are on Moodle.
+>
+> **Rules**: Send me an email if you miss the class. You are grown-up adults, I trust you to follow thoroughly the class. Do not hesitate to work in small groups.
+>
+> **Data**: Data are [here](https://drive.google.com/drive/folders/1mNXjRVWK4-5ZcgrYdNgevgxV25byMHPL?usp=sharing).
+>
+> **Evaluation**: There is no evaluation.
+
+::: {.callout-caution collapse="true"}
+## Log
+
+-   v0.0 - 15/09/25 - Creation
+:::
+
+## Class outline
+
+-   Part 0: First hand on Stata
+    -   Discover Stata
+    -   Do-files and logs
+-   Part 1: Open data
+    -   Open and manipulate data
+    -   Clean databases
+    -   Macro and locals
+    -   Loops
+-   Part 2: Descriptive statistics
+    -   Compute descriptive statistics
+    -   Export them in `.tex`
+    -   Linear regressions
+-   Part 3: Data visualization
+    -   Scatter plots/linear regression
+    -   Bar/density charts (imports exports)
+    -   Line charts (life exp.)
+    -   Box plots (temperature)
+    -   Regression coefficients (auto)
+
+
+During sessions, I will walk you through all materials covered here. I provide some exercises that you are required to perform.
+
+## About this site and my inspirations
+
+I created this site for teaching purpose. It is of course perfectible and any constructive comment is more than welcome ([write me an email!](mailto:mateo.moglia@gmail.com)). I took inspiration from the teaching resources listed [here](https://www.stata.com/links/resources-for-learning-stata).

@@ -1,0 +1,312 @@
+[
+  {
+    "objectID": "home.html",
+    "href": "home.html",
+    "title": "Welcome to this class!",
+    "section": "",
+    "text": "This website will walk you through the tutorials for the Introduction to Stata course of Ecole Polytechnique’s Master program. The course has 3 main objectives: (i) know the basics of Stata (ii) manipulate the standard statistical and empirical tools (iii) make appealing output.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "home.html#class-outline",
+    "href": "home.html#class-outline",
+    "title": "Welcome to this class!",
+    "section": "Class outline",
+    "text": "Class outline\n\nPart 0: First hand on Stata\n\nDiscover Stata\nDo-files and logs\n\nPart 1: Open data\n\nOpen and manipulate data\nClean databases\nMacro and locals\nLoops\n\nPart 2: Descriptive statistics\n\nCompute descriptive statistics\nExport them in .tex\nLinear regressions\n\nPart 3: Data visualization\n\nScatter plots/linear regression\nBar/density charts (imports exports)\nLine charts (life exp.)\nBox plots (temperature)\nRegression coefficients (auto)\n\n\nDuring sessions, I will walk you through all materials covered here. I provide some exercises that you are required to perform.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "home.html#about-this-site-and-my-inspirations",
+    "href": "home.html#about-this-site-and-my-inspirations",
+    "title": "Welcome to this class!",
+    "section": "About this site and my inspirations",
+    "text": "About this site and my inspirations\nI created this site for teaching purpose. It is of course perfectible and any constructive comment is more than welcome (write me an email!). I took inspiration from the teaching resources listed here.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "part0_stata.html",
+    "href": "part0_stata.html",
+    "title": "First hand on Stata",
+    "section": "",
+    "text": "In this part, we open Stata and familiarize with the software. Stata is a proprietary software, first released in 1985. As of today, Stata version is Stata 19.",
+    "crumbs": [
+      "First hand on Stata"
+    ]
+  },
+  {
+    "objectID": "part0_stata.html#general-philosophy",
+    "href": "part0_stata.html#general-philosophy",
+    "title": "First hand on Stata",
+    "section": "General philosophy",
+    "text": "General philosophy\nThe idea is to open one dataset at a time and apply a number of commands on this dataset. As opposed to object-based languages, Stata can deal with only one dataset at a time.\nCode is written on a script called a do-file. It can be ran entirely or line by line. Each line is a different command.\nThey key advantage of Stata is the efficiency to run econometrics tasks as opposed to R and Python. Personnaly, I find it more intuitive. On top of that, it is easier to export output in .tex or image formats.",
+    "crumbs": [
+      "First hand on Stata"
+    ]
+  },
+  {
+    "objectID": "part0_stata.html#best-practice",
+    "href": "part0_stata.html#best-practice",
+    "title": "First hand on Stata",
+    "section": "Best practice",
+    "text": "Best practice\nBefore jumping to coding per se, let me recall you some best practices when performing computer-based tasks. Knowing those practices is relevant for several reasons:\n\nSave yourself time in the future: it might me bothersome at first, but the future you will thank the current you\nResearch reproducibility is a high-stake aspect of research\nIT is probably more pleasant to work in a tidy and clean environment than in a messy one\n\n\nFolder organization\nComputers are organized around folders. We are going to work in a working directory (wd), but we need to identify it. My folder tree looks like it:\n/Users/mmoglia/Dropbox/\n├── Documents/\n│   ├── perso/\n│   │   ├── banque/\n│   │   ├── admin/\n│   │   └── festival/\n├── Downloads/\n├── Music/\n├── Pictures/\n│   ├── famille/\n│   ├── vacances/\n└── courses/\n│   ├── polytechnique/\n|   |   ├── 2024_eco102/\n|   |   ├── 2025_eco1s002/\n|   |   ├── 2026_eco51423ep/\n├── research/\nHere we are going to work in ~/courses/2026_eco51423ep/. This folder may (and should!) contains subfolders, for instance: /code, /output, /raw_data, etc. Each time I start a project, I always create those ones – with a similar naming conventions in all my projects. I stick to these rules to save time when navigating between projects (and when changing computers).\n\n\nNaming convention\nA typical tip is to choose simple and short titles for the files and the scripts. For instance, this file is named part0_r.qmd. Your code can be named code_tutorial.R. It should be self-explanatory.\n\n\n\n\n\n\nTip\n\n\n\nAvoid at all cost to use spaces or special characters in your file names. Prefer instead an underscore.\n\n\n\n\nWhen writing code\n\nAlways comment your code, make it readable for your future self but also for others. You may use your code in a week, a month, a year, and should be able to directly understands it! Comments in Stata starts with * or // or are put between /* comment */.\nWhen creating variables and files give them simple but understandable names.\nFor instance, if you create a dataset containing wages for individuals aged between 25 and 30, you way call it wage_25_30 and not w2530 (too short) or wage_individuals_aged_25_30 (too long).\nMoreover, especially for large project, you want to have different scripts. Always keep scripts short and with clear names. For instance 1_clean_data.do, 2_import_wages.do, 3_merge_datasets.do, and 4_data_analysis.do.",
+    "crumbs": [
+      "First hand on Stata"
+    ]
+  },
+  {
+    "objectID": "part0_stata.html#open-a-do-file",
+    "href": "part0_stata.html#open-a-do-file",
+    "title": "First hand on Stata",
+    "section": "Open a do-file",
+    "text": "Open a do-file\nWe open Stata and open our first do-file. We provide some indication on what we aim to do and perform our first data manipulation.\n\nDescribe the code\nTo comment a line we can use * or //. To comment a block of code, you have to put it between /* The code you which to comment out */.\n/*_______________________________________\n\n    This code aims to open the auto dataset and\n    clean it \n\n_______________________________________*/\n\n    * Load the data\n    sysuse auto.dta // Open the auto dataset\n\n\nRun lines\nTo run the do-files, you can either select all lines and press CTRL + D or select a line and run the latter command.\nBy default Stata is going to print every output you run. If you to run a line but make the output salient (for instance because you want to extract a result but do not need to see the output to keep your log clean), you can start the line with quietly: or put the whole code in brackets: quietly{ a long code bunch }.\n\n\nLogs\nYou will see that when running the lines of code, output will be printed in the main window. To keep track of the output and code producing the output, you may want to create a log file.\n\n\n\n\n\n\nTip\n\n\n\nTo seek for help, you can type help command in the Console. For instance, for log, you can write help log.\n\n\n\n\nSyntax\nThe syntax is -almost- always the same in State:\nfunction var, options\nYou start off with the name of the function, for instance sysuse, then the name of the variable(s) (or the object, the path, etc.), here auto.dta, and you finish with the potential options after a comma.\nIt is also worth noting that most Stata functions have shortcuts. For instance, the function regress, which, as you may have understood, is useful to regress works also with reg. The function summary can be shortcut with su.\nIt goes the same with some options and for most variables names, as long as there is no ambiguity.\nLastly, you can use * as a joker for a letter in a variable names. Let’s say you have columns popmun2007, popmun2008, etc. until popmun2020. If you want to summarize those 13 variables you can:\n\nUse summarize popmun2007 popmun2008 popmun2009 popmun2010 popmun2011 popmun2012 popmun2013 popmun2014 popmun2015 popmun2016 popmun2017 popmun2018 popmun2019 popmun2020\nUse summarize popmun2007-popmun2020 if the columns are in that order!\nUse summarize popmun* as token",
+    "crumbs": [
+      "First hand on Stata"
+    ]
+  },
+  {
+    "objectID": "part1_data_manipulation.html",
+    "href": "part1_data_manipulation.html",
+    "title": "Data manipulation",
+    "section": "",
+    "text": "For the sake of this part, we are going to use several built-in datasets in Stata. We are going to use the Ile-de-France database I prepared for this class a bit later on.",
+    "crumbs": [
+      "Data manipulation"
+    ]
+  },
+  {
+    "objectID": "part1_data_manipulation.html#open-and-describe-the-data",
+    "href": "part1_data_manipulation.html#open-and-describe-the-data",
+    "title": "Data manipulation",
+    "section": "Open and describe the data",
+    "text": "Open and describe the data\nTo open the built-in data, we use sysuse. Otherwise, several other approaches exist:\n\nStandard approach to open .dta files (the Stata proprietary data format) is use /path/mydata.dta.\nExcel files are opened with import excel /path/mydata.xlsx\nDelimited files are opened with import delimited /path/mydata.csv, sep(\",\")\nSome files can be opened through internet use www.linktodata.dta, clear\n\n\n\n\n\n\n\nTip\n\n\n\nStata does not overwrite naturally variables or datasets, hence, you need to specificy sysuse data, clear if you want to overwrite the dataset you have opened before.\n\n\n\nDescribe the data\nFor this part, we are using use https://www.stata.com/users/youtube/rawdata.dta, clear as our dataset. It contains information on the health of individuals.\n\n\n\n\n\n\nExercise\n\n\n\nOpen a dofile, clear all the memory by starting off with clear all and follow the instructions:\n\nOpen the rawdata.dta base with the link above\nUsing browse, take a look at the data\nUsing describe, take a look at the format\nUsing count, print the observation number\nUsing tabulate, print a frequency table for the sex\nUsing summarize, print summary statistics for the cholesterol concentration. What do you notice?",
+    "crumbs": [
+      "Data manipulation"
+    ]
+  },
+  {
+    "objectID": "part1_data_manipulation.html#data-cleaning",
+    "href": "part1_data_manipulation.html#data-cleaning",
+    "title": "Data manipulation",
+    "section": "Data cleaning",
+    "text": "Data cleaning\nThe dataset obviously required some data cleaning.\n\nKeep/drop\nLet’s assume we want to keep individuals aged more than 25 (which is equivalent to drop individuals aged below than 25).\nkeep if age &gt; 25\n* or: drop if age &lt;= 25\nWe also want to drop if dob is missing, hence: drop if missing(dob). Finally, we drop only Black and White: keep if inlist(race,\"White\",\"Black\") or more directly drop if race == \"Other\".\n\n\nChange data format\nAs notice earlier, the cholesterol concentration is in string whereas it should be in numeric.\ndestring cholesterol, replace or create a new variable with , gen(new_var).\n\n\nAdd labels\nAs you notice on the right panel, some variables do not have a label. Using label variable varname \"varlabel\", give a label to age and to dob.\n\n\nAdd value labels\nIf you tabulate sex, you notice that it takes binary values: 0 for female and 1 for men. However, this is not super informative and we would like to add a label to the values such it prints male and female instead of 0 and 1.\nTo do so, we define a label, to which we give a name, and we apply it to our values.\nlabel define sex_lab 0 \"Female\" 1 \"Male\"\nlabel values sex sex_lab\nNow, you can browse or tabulate sex to check if it worked.\n\n\nCreate a variable\nSo far, we only manipulated existing variables, but we want to create two new variables.\nThe first one is a dummy variable (ie, takes 0 or 1) for race. Using the function generate and a if statement, we can build it.\ngenerate race_dummy = . // Create an empty variable\nreplace race_dummy = 1 if race == \"White\" // Replace if white\nreplace race_dummy = 0 if race == \"Black\" // Replace if black\n\n\nMake a grouping variable #1\nThe variable chol has a high heterogeneity:\n. sum chol\n\n    Variable |        Obs        Mean    Std. dev.       Min        Max\n-------------+---------------------------------------------------------\n        chol |      1,266    216.4415    46.84972         89        426\nLet’s imagine we want to create a grouping variable with the cholesterol concentration rounded to the nearest 10. We have two options: using a loop or a built-in function.\nThe built-in function is gen floored_chol = floor(chol/10)*10. The loop looks like that:\ngen floored_chol = .\nforval x = 80(10)420{\n    replace floored_chol = `x' if inrange(chol,`x',`x' + 9)\n}\nLet’s break it down:\n\nGenerate an empty numeric variable\nforval x = 80(10)420{ initializes the loop, where the running variable x goes from 80 to 420 with a step of 10\nreplace floored_chol = `x' if inrange(chol,`x',`x' + 9) replaces the values in floored_chol under a condition\nThis condition is such that chol is in the range of x and x+9\n\nTwo remarks:\n\nIs inrange() equivalent to x &gt; chol &gt; x + 9 or x &gt;= chol &gt;= x + 9\nWhat is the most efficient approach?\n\n\n\nMake a grouping variable #2\nNow let’s imagine we want to make a grouping variable that is equal to 1 if the weight is greater than the mean and 0 otherwise.\nTo do so, we can do it in three steps:\n\nCompute the mean of weight\nGenerate a column containing the mean of weight\nGenerate a column with the aforementionned dummy variable\n\n\n\n\n\n\n\nExercise\n\n\n\nDo the exercise above. Hint: use egen new_var = mean(var) to do.\n\n\n\n\nMake a grouping variable #3\nLast but not least, we may want to assess if the individual has a cholesterol concentration higher than the 3rd quartile of her own age class.\nTo do so, we introduce the syntax: by(), which allows to compute statistics by group. It can be used in two ways:\n\nEither as an option: function var, by(sex)\nEither in a prefix, with a sort command: by sex, sort: function var\n\nI prefer the second option as it is more flexible in more advanced use we will eventually see.\n\n\n\n\n\n\nExercise\n\n\n\nCreate the aforementioned variable.",
+    "crumbs": [
+      "Data manipulation"
+    ]
+  },
+  {
+    "objectID": "part1_data_manipulation.html#a-word-on-locals",
+    "href": "part1_data_manipulation.html#a-word-on-locals",
+    "title": "Data manipulation",
+    "section": "A word on locals",
+    "text": "A word on locals\nThroughout our use of Stata, we are going to use locals. These are object that are stored in the memory of Stata right after certain commands are ran and can be called in code.\nThe most common use of locals is after a summarize var, detail command is ran. If you check at the end of the help of summarize, you see that many results are stored. You can called those stored results within the next run-down of code.\nHence, for our variable above or below the mean it becomes very handy:\nqui sum weight, d\ngen weight_abvmean = weight &gt; `r(mean)' \nNotice the little trick here. For dummary variable, I directly put the condition to have 1 if true and 0 otherwise.\nWe could have used the local in the loop as well:\nuse https://www.stata.com/users/youtube/rawdata.dta, clear\n        \ndestring chol, replace\n        \ncap drop floored_chol\ngen floored_chol = .\n        \nqui sum chol, d\nlocal min_chol = floor(r(min)/10)*10\nlocal max_chol = ceil(r(max)/10)*10\nlocal step = 10\n                \nforval x = `min_chol'(`step')`max_chol'{\n    qui replace floored_chol = `x' if inrange(chol,`x',`x'+9)\n}\nAltough it seems a bit more challenging, it ensures a large flexibility.",
+    "crumbs": [
+      "Data manipulation"
+    ]
+  },
+  {
+    "objectID": "part1_data_manipulation.html#more-on-loops",
+    "href": "part1_data_manipulation.html#more-on-loops",
+    "title": "Data manipulation",
+    "section": "More on loops",
+    "text": "More on loops\nLoops are extremely common in Stata. We saw the most simple loops: the ones that run through numbers with specific steps.\nHowever, a loop can run through other objects, and especially lists. For instance, you can run a loop across variables:\nforeach x of varlist id-chol{\n    your code ...\n}\nYou can run through any types of list:\nforeach x in \"a b c\"{\n    your code ...\n}",
+    "crumbs": [
+      "Data manipulation"
+    ]
+  },
+  {
+    "objectID": "part1_data_manipulation.html#locals-vs.-globals",
+    "href": "part1_data_manipulation.html#locals-vs.-globals",
+    "title": "Data manipulation",
+    "section": "Locals vs. globals",
+    "text": "Locals vs. globals\nAs mentioned earlier locals are stored temporarily right after the code has ran. If you want to store something for a longer period, you can create a global using global gl_name = xxx.\nFor instance, I like to create a global containing the path of my working directory: global path = \"C:/Users/mateomoglia/...\". Hence, I can call it later on the the $path symbol.\nFor instance, we can create a global global sexes = \"Male Female\" and use it in a loop:\nforeach x of global sexes{\n    some code ...\n}",
+    "crumbs": [
+      "Data manipulation"
+    ]
+  },
+  {
+    "objectID": "part1_data_manipulation.html#manipulate-string-variables",
+    "href": "part1_data_manipulation.html#manipulate-string-variables",
+    "title": "Data manipulation",
+    "section": "Manipulate string variables",
+    "text": "Manipulate string variables\nManipulate string variables is extremely useful. In the dataset on health, we have the column containing the date of birth.\n\nExtract letters\nUsing the function substr(var,pos_start,pos_end), we can extract the first three letters of the month of birth. Using touuper(var), you can put those three letters in capital letters, in accordance of the standard ISO practice\n\n\nExtract words\nInstead of extracting the first three letters, let’s imagine we want to extract the first word. Because words are separated by spaces, we need to use substr(dob,1,position of the space - 1). To know the position of the space, we use strpos(dob,\" \").",
+    "crumbs": [
+      "Data manipulation"
+    ]
+  },
+  {
+    "objectID": "part2_summary_stats.html",
+    "href": "part2_summary_stats.html",
+    "title": "Summary statistics",
+    "section": "",
+    "text": "In this short part, we are going to learn how to make summary statistics, especially by group, to export them in .tex format.",
+    "crumbs": [
+      "Summary statistics"
+    ]
+  },
+  {
+    "objectID": "part2_summary_stats.html#summary-statistics",
+    "href": "part2_summary_stats.html#summary-statistics",
+    "title": "Summary statistics",
+    "section": "Summary statistics",
+    "text": "Summary statistics\nWe use the very standard and famous auto.dta database:\n    // Load the data\nsysuse auto, clear\n\n    // Take a quick look at the data\ndescribe\nsummarize\nlist in 1/10\nWe are going to make simple summary statistics first:\nsummarize price\nsummarize price, detail\nTo make it more compact and to have several variables: tabstat.Use by() to split by a categorical variable, tabstat gives flexible stats and layout:\ntabstat price mpg weight length, statistics(mean sd min p50 max n) columns(statistics)\ntabstat price mpg weight, by(foreign) statistics(mean sd p50 n) columns(statistics)\nTo make it frequency tables, we can use tabulate with one or two variables:\ntabulate foreign\ntabulate foreign rep78, row column\nIf you want summary statistics (e.g., mean of mpg) by category use tabulate with summarize():\ntabulate foreign, summarize(mpg)\nTo make simple comparison t-test (mean of price by foreign):\nttest price, by(foreign) unequal",
+    "crumbs": [
+      "Summary statistics"
+    ]
+  },
+  {
+    "objectID": "part2_summary_stats.html#latex-export",
+    "href": "part2_summary_stats.html#latex-export",
+    "title": "Summary statistics",
+    "section": "LaTeX export",
+    "text": "LaTeX export\nThere are two widely used approaches: estpost + esttab (from the estout package) — flexible, works with summarize, tabstat, tabulate, ttest, etc., and can write LaTeX directly.\n\n\n\n\n\n\nInstall packages\n\n\n\nA large amount of work can be achieved with base Stata (historically user-written packages have been added to the “main” Stata version). However, some packages have to installed before hand. You need to do it only once on your computer. To use the aforementioned packages, you need to install them. To do so:\nssc install estout\n\n\nHere is a short summary of the key estout commands:\n\nClear any stored estimates: eststo clear (shortcut for estimates store clear)\nPost summary stats (overall) estpost summarize price mpg weight length, listwise\nWrite LaTeX table (replace file if exists)\n\nesttab . using \"summary_overall.tex\", replace /// \n    title(\"Summary statistics (overall)\") /// \n    cells(\"count(fmt(%0.0f)) mean(fmt(%9.2f)) sd(fmt(%9.2f)) min(fmt(%9.0f)) p50(fmt(%9.2f)) max(fmt(%9.0f))\") /// \n    label booktabs noobs nomtitle\nThis creates summary_overall.tex you can \\input{} into your LaTeX document.\n\n\n\n\n\n\nTip\n\n\n\nNotice the use of /// at the end of the line. It breaks long line of code. Hence, you need to run all the code bunch. In more recent of Stata, the lines break automatically.\n\n\nIt also works by group: let’s say you want the mean and standard deviation of price, mpg, and weight by foreign:\n\nestpost tabstat price mpg weight, by(foreign) statistics(mean sd p50 n) nototal columns(statistics)\nExport to LaTeX esttab . using \"summary_by_foreign.tex\", replace cells(mean sd) label nogaps booktabs noobs nomtitle\n\nThis produces a LaTeX table where each group appears and mean/sd are shown. Note that you can export in other text formats .txt, .smcl (the Stata format), .xlsx, etc.\nFinally, we can export a frequency table for foreign:\nestpost tabulate foreign \nesttab . using \"freq_foreign.tex\", replace /// \ncells(\"b(lab(freq)) pct(fmt(2))\") label booktabs noobs nomtitle",
+    "crumbs": [
+      "Summary statistics"
+    ]
+  },
+  {
+    "objectID": "part1_data_manipulation.html#database-size-manipulation",
+    "href": "part1_data_manipulation.html#database-size-manipulation",
+    "title": "Data manipulation",
+    "section": "Database size manipulation",
+    "text": "Database size manipulation\nFor this part, we are going to use the built-in uselifeexp.dta database. First, we describe the data. We have, per year, the life expectancy for the overall population LE, and then the LE by gender, race, and gender-race.\n\nReshaping\nThe dataset is wide: for each ID (here the year) we have several variables. Let’s assume we want to make it long, having a same ID repeated several time (one for each type).\nIn Stata, this operation is called reshaping. A lot of memes have been made about it because no one knows how to do it without seeking for help.\nrename le le_all // Otherwise, the variable is already defined\nreshape long le@, i(year) j(type) string\nThe syntax is simple:\n\nreshape long if we want to do wide &gt; long and reshape wide to do long &gt; wide.\nThe @ indicates the function the starting position of the suffix\nThe option i() contains the ID variables, which are not going to change\nThe option j() is the name of the newly created variable (here the one that will contain the type)\nThe option string is needed if the suffix contains letters\n\nIn the end, we obtain three columns: year, le containing the value for LE, and type with the associated type.\n\n\nCollapsing\nNow, let’s say we want to compute the average life expectancy by group and by decade. First, we create the decade variable: gen decade = floor(year/10)*10. Then, we use the super useful function collapse (mean) le, by(decade type).\nCheck the documentation for the function to see all you can do with it!!\n\n\nMerging/Appending\nAs we noticed, you can open only one dataset at a time in Stata. To join two or more datasets, two options exist:\n\nMerging\nThe syntax is `merge m:m common_var, using “/path/to/the/merged/dataset”.\nThe merged dataset has to be in .dta format and contains the specified common variables (at least one) and no other conflicting variables.\nSeveral joints exist:\n\n1:1: exactly one obs. in df1 will be merged to exactly one obs. in df2\n1:m and m:1: one obs. can be matched to several in the other dataset\nm:m: the most flexible and less precise, any obs. can be matched with any obs.\n\nmerge will create a new column _merge (name can be changed with the option gen(name_of_merge_column)) that tags observations that were merged and those unmerged from the master and from the merged datasets.\nAn exercise will arrive to try the command.\n\n\nAppending\nThe syntax `append using “/path/to/the/appended/dataset”. It stacks two datasets one over the other. They need to have the same column names. If it is not the case: the missing column is filled with NAs.",
+    "crumbs": [
+      "Data manipulation"
+    ]
+  },
+  {
+    "objectID": "part2_summary_stats.html#simple-statistics",
+    "href": "part2_summary_stats.html#simple-statistics",
+    "title": "Summary statistics",
+    "section": "Simple statistics",
+    "text": "Simple statistics\nWe use the very standard and famous auto.dta database:\n    // Load the data\nsysuse auto, clear\n\n    // Take a quick look at the data\ndescribe\nsummarize\nlist in 1/10\nWe are going to make simple summary statistics first:\nsummarize price\nsummarize price, detail\nTo make it more compact and to have several variables: tabstat.Use by() to split by a categorical variable, tabstat gives flexible stats and layout:\ntabstat price mpg weight length, statistics(mean sd min p50 max n) columns(statistics)\ntabstat price mpg weight, by(foreign) statistics(mean sd p50 n) columns(statistics)\nTo make it frequency tables, we can use tabulate with one or two variables:\ntabulate foreign\ntabulate foreign rep78, row column\nIf you want summary statistics (e.g., mean of mpg) by category use tabulate with summarize():\ntabulate foreign, summarize(mpg)\nTo make simple comparison t-test (mean of price by foreign):\nttest price, by(foreign) unequal",
+    "crumbs": [
+      "Summary statistics"
+    ]
+  },
+  {
+    "objectID": "part2_summary_stats.html#advanced-users",
+    "href": "part2_summary_stats.html#advanced-users",
+    "title": "Summary statistics",
+    "section": "Advanced users",
+    "text": "Advanced users\nA package I particularly like is tabout, which documentation can be found here. It is not straightforward to use but comes very handy to make complex descriptive statistics table.",
+    "crumbs": [
+      "Summary statistics"
+    ]
+  },
+  {
+    "objectID": "part2_summary_stats.html#exercise",
+    "href": "part2_summary_stats.html#exercise",
+    "title": "Summary statistics",
+    "section": "Exercise",
+    "text": "Exercise\nTo wrap up on data manipulation and summary statistics, we are going to make an exercise using first the built-in census.dta.\n\nSet-up your dofile and create two globals: one containing your path and one containing the string “1980 2010”\nTabulate the region name (there are four census regions in the US: Northwest, Midwest, West and South)\nRegions’ names are not informative enough: create a new label containing the right regions’ names and update the region label.\nUsing decode var, gen(new_var), create a new variable containg the regions’ names as string\nKeep only the state, region and pop variables\nRename pop to pop1980\nSave in your/path/temp/census1980.dta\n\nNow we are going to use another dataset, an Excel file.\n\nOpen the nst-est2019-01.xlsx from the raw data folder using import excel and the path you created! Pay attention to the range you want to open: we keep only A10 to B60\nRename the first two columns state and pop2010\nState names all start with a “.”. Using subinstr command, remove the dots\nSave in your/path/temp/census2010.dta\n\nNow we merge the two datasets.\n\nClear the open datasets, open census2010.dta and merge with census1980.dta with m:m and state as joining variable. What happened? Tabulate _merge to investigate a bit more.\nSome states are not named the same depending on the dataset. Write a loop that runs through the year global: open the dataset, replace “W.” by “West”, “S.” by “South”, and “N.” by North, save the dataset.\nMerge the datasets. Remove the only non-merged observation.\n\nFinally, we make some descriptive statistics:\n\nCompute the population change\nMake a table summarizing (mean, sd and median) the change in population by region\nReshape the dataset in long format to have two lines per state: one for 1980 and one for 2010\n\nBonus:\n\nCollapse change by region (compute the mean)\nUsing graph bar var, over(group), make a graph bar of change by region",
+    "crumbs": [
+      "Summary statistics"
+    ]
+  },
+  {
+    "objectID": "part3_data_viz.html",
+    "href": "part3_data_viz.html",
+    "title": "Data visualization",
+    "section": "",
+    "text": "We are going to make some data visualization. Disclaimer: most of the material is adapted from this link. I simply adapt the",
+    "crumbs": [
+      "Data visualization"
+    ]
+  },
+  {
+    "objectID": "part3_data_viz.html#general-remarks",
+    "href": "part3_data_viz.html#general-remarks",
+    "title": "Data visualization",
+    "section": "General remarks",
+    "text": "General remarks\nTo make a graph, the standard approach is as for command: graph_command variable, options. You may want to overlay several plots due to the way your data are built or depending on your needs (eg, a bar chart and a line plot). Hence, you need to use either twoway (graph_command1 var1, options1) (graph_command2 variable2, options2), general_options.\nGood practice for graphs: always a legend, straightforward interpretation, not too much information.\nStata has some built-in “looks” for graphs, called scheme. Take a look here to have an overview of the various schemes. I personally like the factory one, but we are going to check how to improve the look of the graphs.",
+    "crumbs": [
+      "Data visualization"
+    ]
+  },
+  {
+    "objectID": "part3_data_viz.html#scatter-plots",
+    "href": "part3_data_viz.html#scatter-plots",
+    "title": "Data visualization",
+    "section": "Scatter plots",
+    "text": "Scatter plots\nThe command is scatter, usually abbreviated in sc. It requires two variables: y and x (in this order).\nuse https://dss.princeton.edu/training/wdipol.dta\nkeep if year == 2012 // keep one year only\n\nsc import export // Not super clear\n\ngen limport = log(import) // Make them log to improve readability\ngen lexpot = log(export)\nWe can add various options:\nsc limport lexport, mcolor(cranberry) msymbol(Oh) mlwidth(0.1) xtitle(\"Export (USD, log)\") ytitle(\"Export (USD, log)\")\nsc limport lexport, mc(cranberry) m(Oh) mlw(0.1) xti(\"Export (USD, log)\") yti(\"Export (USD, log)\")\ntw (sc limport lexport, mcolor(cranberry) m(Oh) mlw(0.1) xti(\"Export (USD, log)\") yti(\"Import (USD, log)\") yaxis(1)) (sc gdppc limport , yaxis(2)), legend(pos(6))\nWe add several options to choose the colour, the type of symbol, the width of the symbol, and adapt the legends. Notice the legend(pos(6)) on the last scatter plot. This is a special case of “option of option”. Here, the position of the legend, at 6-hour (so in the bottom).\nA last, interesting version could be:\ntw (sc limport lexport, mcolor(cranberry) m(Oh) mlw(0.1) xti(\"Export (USD, log)\") yti(\"Import (USD, log)\") yaxis(1)) (sc gdppc limport, yaxis(2) mc(navy) m(Dh) mlw(0.1)), legend(pos(6) cols(2) order(1 \"Import (USD, log)\" 2 \"GDP pc (USD)\"))\nMany, many options exist. Try to run help sc or any type of graphs and navigate through.\n\n\n\n\n\n\nTip\n\n\n\nBased on the last code, can you add an additional element: a regression line for limport and lexport.\n\nOverlay a third element thanks to (lfit y x)\nMake this line the same color as the points\nDo not forget to adapt the legend with the option order()",
+    "crumbs": [
+      "Data visualization"
+    ]
+  },
+  {
+    "objectID": "part3_data_viz.html#line-charts",
+    "href": "part3_data_viz.html#line-charts",
+    "title": "Data visualization",
+    "section": "Line charts",
+    "text": "Line charts\nAnother interesting data visualization is the line chart. It is especially useful when you have panel data or time series. Usually, on the x-axis, there are the years, and the y-axis the values per year.\nHere, we use the life expectancy database with sysuse uslifeexp.dta.\nThe syntax to make a line is very simple:\nline le year // always the y axis last\nline le_male le_female year \nDepending on the need, an alternative exists and is useful as well:\nsc le_male le_fem year, connect(l l) // use connect() with to \"l\" to connect both series\nWe can improve the graph in three ways:\n\nPut the legend inside the graph and improve the labelling\nChange the color\nAdd an arrow\n\nline le_male le_female year, ///\n            legend(pos(0) bplacement(4)) ///\n            title(\"{bf:Life expectancy} in the 20th century\") ///\n            note(\"US Census data\") ///\n            ylab(,nogrid) xlab(,nogrid)\nNotice that we also removed the grid behind and put the title in bold.\n// Change the appearance of the lines\nline le_male le_female year, ///\n    lc(green cranberry) lp(longdash longdash_dot) ///\n    legend(pos(0) bplacement(4)) ///\n    title(\"{bf:Life expectancy} in the 20th century\") ///\n    note(\"US Census data\") ///\n    ylab(,nogrid) xlab(,nogrid)\nThe drop in life expectancy is due to the Spanish flu in 1919. We add an arrow to higlight it:\ntw (line le_male le_female year, lc(green cranberry) lp(longdash longdash_dot)) ///\n   (pcarrowi 45 1930 40 1919 (2) \"Spanish flu\", color(black) mlabcolor(black)), ///\n   legend(order(1 2) pos(0) bplacement(4)) ///\n   title(\"{bf:Life expectancy} in the 20th century\") ///\n   note(\"US Census data\") ///\n   ylab(,nogrid) xlab(,nogrid)",
+    "crumbs": [
+      "Data visualization"
+    ]
+  },
+  {
+    "objectID": "part3_data_viz.html#bar-graph-and-histograms",
+    "href": "part3_data_viz.html#bar-graph-and-histograms",
+    "title": "Data visualization",
+    "section": "Bar graph and histograms",
+    "text": "Bar graph and histograms\nMaking histogram is easy with the function hist:\nhist gdpcc\nhist gdpcc, frequency\nhist gdpcc, kdensity\nhist gdpcc, kdensity normal\nThis latter approach is not highly flexible in terms of legend:\nhist gdppc, $histopts kdensity normal kdenopts(lc(cranberry)) normopts(lc(navy))\n    \nqui sum gdppc, d\ntw (hist gdppc, $histopts) ///\n   (kdensity gdppc, lc(cranberry)) ///\n   (function y=normalden(x, `r(mean)', `r(sd)'), range(`r(p1)' `r(p99)') lc(navy)), ///\n   legend(pos(6) cols(2) order(2 \"Kernel density\" 3 \"Normal distrib.\"))\nWe can also do it for groups of country (with an alternative syntax for twoway graphs):\ntwoway hist gdppc if country==\"United States\", bin(10) || ///\n       hist gdppc if country==\"United Kingdom\", bin(10) ///\n       fcolor(none) lcolor(red) legend(label(1 \"USA\") label(2 \"UK\"))\nWe can also make bar chart to plot the GDP of all countries:\ngraph hbar (mean) gdppc, over(country, sort(1) descending label(labsize(*0.50)))\n\ngraph hbar (mean) gdppc if gdppc&gt;18000, ///\nover(country, sort(1) descending label(labsize(*0.7))) ///\nbar(1, color(ebblue))\n\ngraph hbar (mean) gdppc (median) gdppc if gdppc&gt;18000, ///\nover(country, sort(1) descending label(labsize(*0.8))) ///\nlegend(label(1 \"GDPpc (mean)\") label(2 \"GDPpc (median)\")) ///\nbar(1, color(blue)) ///\nbar(2, color(brown))\nHere, we use the super useful over() syntax, which allows to plot for several countries over the same graphs. Another example:\nsysuse auto.dta graph bar (mean) price, over(foreign)",
+    "crumbs": [
+      "Data visualization"
+    ]
+  },
+  {
+    "objectID": "part3_data_viz.html#box-plots",
+    "href": "part3_data_viz.html#box-plots",
+    "title": "Data visualization",
+    "section": "Box plots",
+    "text": "Box plots\nWe can make box plots:\ngen lgdppc = log(gdppc)\ngen ltrade = log(trade)\n\ngraph box lgdppc ltrade\n\n\n\n\n\n\nExercise\n\n\n\nMake a box plot with the variables you want, eg. log import/export or trade.\n\nRead carefully the help for graph box\nChange the appearance (color) of the two bars\nChange the width of the graph\nPut the legend below and on two columns\nAdd a beautiful title",
+    "crumbs": [
+      "Data visualization"
+    ]
+  },
+  {
+    "objectID": "part3_data_viz.html#regression-coefficients",
+    "href": "part3_data_viz.html#regression-coefficients",
+    "title": "Data visualization",
+    "section": "Regression coefficients",
+    "text": "Regression coefficients\nRegression coefficients can be plotted along with their confidence intervals. Most of the content is taken from this blog.\nThe package to make coefficient plot is coefplot, you need to install: ssc install coefplot. As in the blog, I use the auto dataset:\nsysuse auto.dta, clear\n\n// We can set all variables from a 0-1 scale\nqui sum mpg // necessary for next line to work\ngen mpg_01=(mpg-r(min)) / (r(max)-r(min)) // subtracts min and divides by range\n\nqui sum weight\ngen weight_01=(weight-r(min)) / (r(max)-r(min))\n\nqui sum length\ngen length_01=(length-r(min)) / (r(max)-r(min))\nWe first run some regressions:\nreg price mpg_01 weight_01 length_01 i.foreign\ncoefplot\nwhile we do not run any other regressions, we can build the coefplot based on it.\n\n\n\n\n\n\nTip\n\n\n\nRemember we used the eststo: reg y x, options before to save regressions. If you want to use the stored regression output to make a coefplot, you can use it as an argument in coefplot est1. You can also restore the results by writing estimates restore est1. This is also useful to use the r() and e() elements.\n\n\nreg price mpg_01 weight_01 length_01 i.foreign, rob\n        \n        * Make a first coefplot\n        coefplot\n        \n        * Add a xline at 0 and remove constant\n        global coefplotopts = \"drop(_cons) xline(0, lcolor(red) lwidth(medium))\"\n        \n        coefplot, ///\n            $coefplotopts ///\n            coeflabels(mpg_01=\"MPG\" weight_01=\"Weight\" length_01=\"Length\")\n            \n            \n        * Make a more complicated regression\n        reg price mpg_01 weight_01 length_01 i.foreign i.foreign#c.mpg_01, coeflegend\n\n        coefplot, $coefplotopts ///\n            coeflabels(mpg_01=\"MPG\" weight_01=\"Weight\" length_01=\"Length\" 1.foreign=\"Foreign\" ///\n            1.foreign#c.mpg_01=\"MPG X Foreign\")\n        \n        * Enhance the graph\n        coefplot, $coefplotopts ///\n            xtitle(\"{bf: Effect on Vehicle Price}\") /// bolded text\n            graphregion(margin(medsmall)) ///\n            xlab(, nogrid) /// no vertical grid\n            ylab(, glpattern(dash) glcolor(gs14)) /// horizontal grid options\n            coeflabels(mpg_01=\"MPG\"  length_01=\"Length\" weight_01=\"Weight\" 1.foreign=\"Foreign\" ///\n            1.foreign#c.mpg_01=`\"\"MPG X\" \"Foreign\"\"') ///\n            headings(mpg_01= \"{bf: Vehicle Specs}\" /// creates headings\n            1.foreign = \"{bf: Production Info}\" 1.foreign#c.mpg_01 = \"{bf: Interactions}\", gap(0)) \n\n\n\n\n\n\nExercise\n\n\n\nDoes trade openness correlate with life expectancy? We use two datasets: the wdipol dataset we used before and a World Bank dataset containing life expectancy across the years.\n\nDownload, save, and open the World Bank dataset here.\nKeep only the country names and the columns that start with v (except v70)\nUsing a loop rename the v variables into le_maleyyyy\nReshape to a long format (new column: year)\nSave as temporary file\n\nBy now you should have a file that looks like:\n\n. list in 1/10\n\n     +------------------------------+\n     |     country   year   le_male |\n     |------------------------------|\n  1. | Afghanistan   1960    32.136 |\n  2. | Afghanistan   1961    32.626 |\n  3. | Afghanistan   1962    33.098 |\n  4. | Afghanistan   1963    33.543 |\n  5. | Afghanistan   1964    34.004 |\n     |------------------------------|\n  6. | Afghanistan   1965    34.438 |\n  7. | Afghanistan   1966    34.877 |\n  8. | Afghanistan   1967    35.324 |\n  9. | Afghanistan   1968    35.825 |\n 10. | Afghanistan   1969    36.287 |\n     +------------------------------+\n\nOpen the trade data, keep only country, year, export and import\nCompute the openness (the share of export in total export+import)\nDrop if openness is missing\nMerge with the life expectancy data\nKeep only merged observations\nCount the number of observations by country (hint: use gen count = _N but by group)\nUsing a local, keep only countries with the maximum of appearance in the panel\n\nBy now, your dataset should look like that:\n\n     +-------------------------------------------------------------------------------------+\n     | year     country      export      import   openness   le_male        _merge   count |\n     |-------------------------------------------------------------------------------------|\n  1. | 1980   Australia   32720.597    26890.83    .548898     70.88   Matched (3)      33 |\n  2. | 1981   Australia   31132.097   29423.028   .5141117      71.2   Matched (3)      33 |\n  3. | 1982   Australia    31867.06   32823.251   .4926095      71.5   Matched (3)      33 |\n  4. | 1983   Australia   32032.664   30058.226   .5158996      71.8   Matched (3)      33 |\n  5. | 1984   Australia   34477.203   31856.781   .5197517      72.1   Matched (3)      33 |\n     |-------------------------------------------------------------------------------------|\n  6. | 1985   Australia   39800.054   37146.973   .5172396      72.4   Matched (3)      33 |\n  7. | 1986   Australia   41306.001   37056.342   .5271155      72.7   Matched (3)      33 |\n  8. | 1987   Australia   45447.108   35304.664   .5628001     73.02   Matched (3)      33 |\n  9. | 1988   Australia   49287.526   39266.643   .5565805     73.34   Matched (3)      33 |\n 10. | 1989   Australia    49803.35   49069.632   .5037104     73.66   Matched (3)      33 |\n     +-------------------------------------------------------------------------------------+\nWe would like to compute summary statistics by continent.\n\nDefine the following globals\n\n        global europe = \"Australia Austria Belgium Bulgaria Denmark Finland France Greece Italy Luxembourg Netherlands Norway Portugal Sweden\"\n        global africa = `\" \"Congo, Dem. Rep.\" \"Congo, Rep.\" \"Kenya\" \"Lesotho\" \"Mauritania\" \"Mauritius\" \"Morocco\" \"Mozambique\" \"Rwanda\" \"South Africa\" \"Tunisia\" \"'\n        global asia = \"Bangladesh India Indonesia Jordan Malaysia Pakistan Singapore Thailand\"\n        global latam = `\" \"Bolivia\" \"Brazil\" \"Chile\" \"Colombia\" \"Costa Rica\" \"Dominican Republic\" \"Ecuador\" \"El Salvador\" \"Guatemala\" \"Honduras\" \"Mexico\" \"Nicaragua\" \"Panama\" \"Peru\" \"Philippines\" \"Uruguay\" \"'\n\nUsing 4 loops, fill a variable called continent with the name of the continent\nSave as temporary file\n\nIt should look like that:\n. list country continent in 1/10, c\n\n     +--------------------+\n     |   country   cont~t |\n     |--------------------|\n  1. | Australia   Europe |\n  2. | Australia   Europe |\n  3. | Australia   Europe |\n  4. | Australia   Europe |\n  5. | Australia   Europe |\n     |--------------------|\n  6. | Australia   Europe |\n  7. | Australia   Europe |\n  8. | Australia   Europe |\n  9. | Australia   Europe |\n 10. | Australia   Europe |\n     +--------------------+\n\nMake a scatter plot between life expectancy and openness in 2012\nMake a scatter plot between life expectancy and openness in 1980 and 2012\nUsing lfitci add a confidence interval to the first plot. In the legend, keep only the entry for the linear fit and the points. Add a note below the graph stating “95% confidence interval.”\nExport as .pdf\n\nNow we want to compute and plot the mean of life expectancy per continent and per year.\n\nUsing the preserve/restore syntax, keep the main dataset in cache throughout the exercise.\nCollapse life expectancy and openness by continent and year. Compute the mean and the median.\nWith a two-axis plot, plot the variation in openness and life expectancy in Asia.\nMake a plot with 4 quadrants depicting the same relationship for the 4 continents\n\nFinally, we would like to regress and plot the coefficient\n\nRegress life expectancy on openness with the option , r\nAdd a dummy for each continent. What do you need to do first?\nAdd a yearly dummy\nMake a plot with the last regression with only openness and the continent dummy.\nMake a plot to compare the coefficients for openness across all three regressions.",
+    "crumbs": [
+      "Data visualization"
+    ]
+  },
+  {
+    "objectID": "part3_data_viz.html#wrapping-up-exercise",
+    "href": "part3_data_viz.html#wrapping-up-exercise",
+    "title": "Data visualization",
+    "section": "Wrapping-up exercise",
+    "text": "Wrapping-up exercise\nDoes trade openness correlate with life expectancy? We use two datasets: the wdipol dataset we used before and a World Bank dataset containing life expectancy across the years.\n\nDownload, save, and open the World Bank dataset here.\nKeep only the country names and the columns that start with v (except v70)\nUsing a loop rename the v variables into le_maleyyyy\nReshape to a long format (new column: year)\nSave as temporary file\n\nBy now you should have a file that looks like:\n\n. list in 1/10\n\n     +------------------------------+\n     |     country   year   le_male |\n     |------------------------------|\n  1. | Afghanistan   1960    32.136 |\n  2. | Afghanistan   1961    32.626 |\n  3. | Afghanistan   1962    33.098 |\n  4. | Afghanistan   1963    33.543 |\n  5. | Afghanistan   1964    34.004 |\n     |------------------------------|\n  6. | Afghanistan   1965    34.438 |\n  7. | Afghanistan   1966    34.877 |\n  8. | Afghanistan   1967    35.324 |\n  9. | Afghanistan   1968    35.825 |\n 10. | Afghanistan   1969    36.287 |\n     +------------------------------+\n\nOpen the trade data, keep only country, year, export and import\nCompute the openness (the share of export in total export+import)\nDrop if openness is missing\nMerge with the life expectancy data\nKeep only merged observations\nCount the number of observations by country (hint: use gen count = _N but by group)\nUsing a local, keep only countries with the maximum of appearance in the panel\n\nBy now, your dataset should look like that:\n\n     +-------------------------------------------------------------------------------------+\n     | year     country      export      import   openness   le_male        _merge   count |\n     |-------------------------------------------------------------------------------------|\n  1. | 1980   Australia   32720.597    26890.83    .548898     70.88   Matched (3)      33 |\n  2. | 1981   Australia   31132.097   29423.028   .5141117      71.2   Matched (3)      33 |\n  3. | 1982   Australia    31867.06   32823.251   .4926095      71.5   Matched (3)      33 |\n  4. | 1983   Australia   32032.664   30058.226   .5158996      71.8   Matched (3)      33 |\n  5. | 1984   Australia   34477.203   31856.781   .5197517      72.1   Matched (3)      33 |\n     |-------------------------------------------------------------------------------------|\n  6. | 1985   Australia   39800.054   37146.973   .5172396      72.4   Matched (3)      33 |\n  7. | 1986   Australia   41306.001   37056.342   .5271155      72.7   Matched (3)      33 |\n  8. | 1987   Australia   45447.108   35304.664   .5628001     73.02   Matched (3)      33 |\n  9. | 1988   Australia   49287.526   39266.643   .5565805     73.34   Matched (3)      33 |\n 10. | 1989   Australia    49803.35   49069.632   .5037104     73.66   Matched (3)      33 |\n     +-------------------------------------------------------------------------------------+\nWe would like to compute summary statistics by continent.\n\nDefine the following globals\n\n        global europe = \"Australia Austria Belgium Bulgaria Denmark Finland France Greece Italy Luxembourg Netherlands Norway Portugal Sweden\"\n        global africa = `\" \"Congo, Dem. Rep.\" \"Congo, Rep.\" \"Kenya\" \"Lesotho\" \"Mauritania\" \"Mauritius\" \"Morocco\" \"Mozambique\" \"Rwanda\" \"South Africa\" \"Tunisia\" \"'\n        global asia = \"Bangladesh India Indonesia Jordan Malaysia Pakistan Singapore Thailand\"\n        global latam = `\" \"Bolivia\" \"Brazil\" \"Chile\" \"Colombia\" \"Costa Rica\" \"Dominican Republic\" \"Ecuador\" \"El Salvador\" \"Guatemala\" \"Honduras\" \"Mexico\" \"Nicaragua\" \"Panama\" \"Peru\" \"Philippines\" \"Uruguay\" \"'\n\nUsing 4 loops, fill a variable called continent with the name of the continent\nSave as temporary file\n\nIt should look like that:\n. list country continent in 1/10, c\n\n     +--------------------+\n     |   country   cont~t |\n     |--------------------|\n  1. | Australia   Europe |\n  2. | Australia   Europe |\n  3. | Australia   Europe |\n  4. | Australia   Europe |\n  5. | Australia   Europe |\n     |--------------------|\n  6. | Australia   Europe |\n  7. | Australia   Europe |\n  8. | Australia   Europe |\n  9. | Australia   Europe |\n 10. | Australia   Europe |\n     +--------------------+\n\nMake a scatter plot between life expectancy and openness in 2012\nMake a scatter plot between life expectancy and openness in 1980 and 2012\nUsing lfitci add a confidence interval to the first plot. In the legend, keep only the entry for the linear fit and the points. Add a note below the graph stating “95% confidence interval.”\nExport as .pdf\n\nNow we want to compute and plot the mean of life expectancy per continent and per year.\n\nUsing the preserve/restore syntax, keep the main dataset in cache throughout the exercise.\nCollapse life expectancy and openness by continent and year. Compute the mean and the median.\nWith a two-axis plot, plot the variation in openness and life expectancy in Asia.\nMake a plot with 4 quadrants depicting the same relationship for the 4 continents\n\nFinally, we would like to regress and plot the coefficient\n\nRegress life expectancy on openness with the option , r\nAdd a dummy for each continent. What do you need to do first?\nAdd a yearly dummy\nMake a plot with the last regression with only openness and the continent dummy.\nMake a plot to compare the coefficients for openness across all three regressions.",
+    "crumbs": [
+      "Data visualization"
+    ]
+  },
+  {
+    "objectID": "part2_summary_stats.html#regression-tables",
+    "href": "part2_summary_stats.html#regression-tables",
+    "title": "Summary statistics",
+    "section": "Regression tables",
+    "text": "Regression tables\nTo make regression tables, we need to make regressions! The function is simple: regress y x, options, usually abbreviated with reg. Many other functions exist: areg, ivregress, reghdfe, etc. depending on the model you want to use but this is beyond the scope of this lecture.\nLet’s run some simple example by assessing the correlation between the cars’ characteristics and their price. Hence, the model writes:\n\\[\n\\texttt{price}_i = \\beta_0 + \\beta_1 \\texttt{foreign}_i + \\beta_2 \\texttt{mpg}_i + \\texttt{rep78}_i + e_i\n\\]\nThe associated Stata code is:\nsysuse auto.dta, clear\n\nreg price i.foreign mpg i.rep78\n\n\n\n\n\n\nTip\n\n\n\nWe use the i. operator because foreign and rep78 are discrete variables (even though coded as a numeric).\n\n\nWe also want to estimate the same model and include the interaction between foreign and mpg, to check if the gasoline consumption differs by origin.\n\\[\n\\texttt{price}_i = \\beta_0 + \\beta_1 \\texttt{foreign}_i + \\beta_2 \\texttt{mpg}_i + \\beta_3 \\texttt{foreign}_i \\times \\texttt{mpg}_i + e_i\n\\]\nThe Stata code with the interaction term writes:\nreg price i.foreign mpg i.rep78 i.foreign#c.mpg\nNotice that we use the c. operator to ensure that mpg is considered as a numeric variable and such that the interaction is not done on all combinations of foreign and mpg.\nNow that we ran our models, how to export the results to LaTeX? We use the estimates store, abbreviated in eststo, syntax. Two ways to proceed:\neststo: reg price i.foreign mpg i.rep78 i.foreign#c.mpg\n\n    /* or */\n\nreg price i.foreign mpg i.rep78 i.foreign#c.mpg\neststo \n\n    /* if we want to give a name */\neststo my_name : reg price i.foreign mpg i.rep78 i.foreign#c.mpg\nreg price i.foreign mpg i.rep78 i.foreign#c.mpg\neststo my_name\nWhile Stata is opened and no eststo clear is ran, we can print again the results by esttab est1. To export the results, we also use esttab with options, notably the tex or preferably the booktabs options (better LaTeX rendering).\n        eststo no_inter: reg price i.foreign mpg i.rep78\n        eststo inter:    reg price i.foreign mpg i.rep78 i.foreign#c.mpg\n        \n        esttab no_inter inter\n        \n        esttab no_inter, booktabs // make it LaTeX\n        esttab no_inter, booktabs se // add the SE\n        esttab no_inter, booktabs se(%9.0f) drop(_cons) // format of se + drop cons\n        esttab no_inter, booktabs se(%9.0f) drop(_cons) star(* 0.1 ** 0.05 *** 0.001) // change sig stars\n        esttab no_inter, booktabs se(%9.0f) drop(_cons) star(* 0.1 ** 0.05 *** 0.001) ///\n            r2 indicate(\"Repair record dummies = *.rep78\") // add R2 and add a \"Yes/No\" ligne for dummies\n        esttab no_inter, booktabs se(%9.0f) drop(_cons) star(* 0.1 ** 0.05 *** 0.001) ///\n            r2 indicate(\"Repair record dummies = *.rep78\") ///\n            label // add labels\n        esttab no_inter, booktabs se(%9.0f) drop(_cons) star(* 0.1 ** 0.05 *** 0.001) ///\n            r2 indicate(\"Repair record dummies = *.rep78\") ///\n            label nobaselevels // no base levels\n            \n        esttab no_inter inter, booktabs se(%9.0f) drop(_cons) star(* 0.1 ** 0.05 *** 0.001) ///\n            r2 indicate(\"Repair record dummies = *.rep78\") ///\n            label nobaselevels // for two models\n        esttab no_inter inter, booktabs se(%9.0f) drop(_cons) star(* 0.1 ** 0.05 *** 0.001) ///\n            r2 indicate(\"Repair record dummies = *.rep78\") ///\n            label nobaselevels nonum // no model num\n        esttab no_inter inter using $path/output/reg.tex, booktabs se(%9.0f) drop(_cons) star(* 0.1 ** 0.05 *** 0.001) ///\n            r2 indicate(\"Repair record dummies = *.rep78\") ///\n            label nobaselevels nonum replace // no model num + latex export",
+    "crumbs": [
+      "Summary statistics"
+    ]
+  },
+  {
+    "objectID": "part1_data_manipulation.html#store-temporary-datasets",
+    "href": "part1_data_manipulation.html#store-temporary-datasets",
+    "title": "Data manipulation",
+    "section": "Store temporary datasets",
+    "text": "Store temporary datasets\nFrom times to times, it is handy to store in the cache memory the dataset to call it later.\n\nUse a tempfile\nLet’s say you want to create a subset of a dataset, save it temporarily (instead of saving it on your hard disk), and then append it to another dataset.\nuse data.dta, clear\n\ndrop if gender == 0\n\n    /*--- some data cleaning ---*/\n\ntempfile temp_file\nsave `temp_file'\n\nuse data.dta, clear\n\ndrop if gender == 1\n\n    /*--- some data cleaning ---*/\n\nappend using `temp_file'\n\n\nUse a preserve\nIn this case, let’s say you want to compute an intermediary summary statistics, save it, and go back to the “main” dataset. Then, you can preserve your data, do some computations, and then restore it:\nuse auto.dta, clear\n\n    /*--- some code ---*/\n\npreserve\ncollapse price, by(foreign)\nsave $path/temp/price_by_foreign.dta, replace\nrestore\n\n    /*--- continue the code ---*/",
+    "crumbs": [
+      "Data manipulation"
+    ]
+  }
+]

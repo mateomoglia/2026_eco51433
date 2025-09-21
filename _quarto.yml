@@ -1,0 +1,27 @@
+project:
+  type: website
+  output-dir: docs
+  
+website:
+  title: "Introduction to Stata"
+  sidebar:
+    style: "docked"
+    search : false
+    contents:
+      - text: "Home"
+        href: home.qmd
+      - text: "First hand on Stata"
+        href: part0_stata.qmd
+      - text: "Data manipulation"
+        href: part1_data_manipulation.qmd
+      - text: "Summary statistics"
+        href: part2_summary_stats.qmd
+      - text: "Data visualization"
+        href: part3_data_viz.qmd
+  page-footer:
+    right: "Built with [Quarto](https://quarto.org/)"
+    left: "&copy; Copyright 2026, Mateo Moglia"
+
+format:
+  html:
+    theme: united

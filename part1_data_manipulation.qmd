@@ -1,0 +1,341 @@
+---
+title: "Data manipulation"
+format: html
+editor: visual
+toc: true
+toc-title: ""
+toc-location: right
+---
+
+For the sake of this part, we are going to use several built-in datasets in Stata. We are going to use the Ile-de-France database I prepared for this class a bit later on.
+
+## Open and describe the data
+
+To open the built-in data, we use `sysuse`. Otherwise, several other approaches exist:
+
+-   Standard approach to open `.dta` files (the Stata proprietary data format) is `use /path/mydata.dta`.
+-   Excel files are opened with `import excel /path/mydata.xlsx`
+-   Delimited files are opened with `import delimited /path/mydata.csv, sep(",")`
+-   Some files can be opened through internet `use www.linktodata.dta, clear`
+
+::: callout-tip
+Stata does not overwrite naturally variables or datasets, hence, you need to specificy `sysuse data, clear` if you want to overwrite the dataset you have opened before.
+:::
+
+### Describe the data
+
+For this part, we are using `use https://www.stata.com/users/youtube/rawdata.dta, clear` as our dataset. It contains information on the health of individuals.
+
+::: callout-tip
+## Exercise
+
+Open a dofile, clear all the memory by starting off with `clear all` and follow the instructions:
+
+1.  Open the `rawdata.dta` base with the link above
+2.  Using `browse`, take a look at the data
+3.  Using `describe`, take a look at the format
+4.  Using `count`, print the observation number
+5.  Using `tabulate`, print a frequency table for the sex
+6.  Using `summarize`, print summary statistics for the cholesterol concentration. What do you notice?
+:::
+
+## Data cleaning
+
+The dataset obviously required some data cleaning.
+
+### Keep/drop
+
+Let's assume we want to keep individuals aged more than 25 (which is equivalent to drop individuals aged below than 25).
+
+``` markdown
+keep if age > 25
+* or: drop if age <= 25
+```
+
+We also want to drop if `dob` is missing, hence: `drop if missing(dob)`. Finally, we drop only Black and White: `keep if inlist(race,"White","Black")` or more directly `drop if race == "Other"`.
+
+### Change data format
+
+As notice earlier, the cholesterol concentration is in string whereas it should be in numeric.
+
+`destring cholesterol, replace` or create a new variable with `, gen(new_var)`.
+
+### Add labels
+
+As you notice on the right panel, some variables do not have a label. Using `label variable varname "varlabel"`, give a label to `age` and to `dob`.
+
+### Add value labels
+
+If you tabulate `sex`, you notice that it takes binary values: 0 for female and 1 for men. However, this is not super informative and we would like to add a label to the values such it prints male and female instead of 0 and 1.
+
+To do so, we define a label, to which we give a name, and we apply it to our values.
+
+``` markdown
+label define sex_lab 0 "Female" 1 "Male"
+label values sex sex_lab
+```
+
+Now, you can `browse` or `tabulate sex` to check if it worked.
+
+### Create a variable
+
+So far, we only manipulated existing variables, but we want to create two new variables.
+
+The first one is a dummy variable (ie, takes 0 or 1) for race. Using the function `generate` and a `if` statement, we can build it.
+
+``` markdown
+generate race_dummy = . // Create an empty variable
+replace race_dummy = 1 if race == "White" // Replace if white
+replace race_dummy = 0 if race == "Black" // Replace if black
+```
+
+### Make a grouping variable #1
+
+The variable `chol` has a high heterogeneity:
+
+``` markdown
+. sum chol
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+        chol |      1,266    216.4415    46.84972         89        426
+```
+
+Let's imagine we want to create a grouping variable with the cholesterol concentration rounded to the nearest 10. We have two options: using **a loop** or a built-in function.
+
+The built-in function is `gen floored_chol = floor(chol/10)*10`. The loop looks like that:
+
+``` markdown
+gen floored_chol = .
+forval x = 80(10)420{
+    replace floored_chol = `x' if inrange(chol,`x',`x' + 9)
+}
+```
+
+Let's break it down:
+
+-   Generate an empty numeric variable
+-   `forval x = 80(10)420{` initializes the loop, where the running variable `x` goes from 80 to 420 with a step of 10
+-   ``` replace floored_chol = `x' if inrange(chol,`x',`x' + 9) ``` replaces the values in `floored_chol` under a condition
+-   This condition is such that `chol` is in the range of x and x+9 
+
+Two remarks:
+
+1.  Is `inrange()` equivalent to `x > chol > x + 9` or `x >= chol >= x + 9`
+2.  What is the most efficient approach?
+
+### Make a grouping variable #2
+
+Now let's imagine we want to make a grouping variable that is equal to 1 if the weight is greater than the mean and 0 otherwise.
+
+To do so, we can do it in three steps:
+
+1.  Compute the mean of `weight`
+2.  Generate a column containing the mean of `weight`
+3.  Generate a column with the aforementionned dummy variable
+
+::: callout-tip
+## Exercise
+
+Do the exercise above. Hint: use `egen new_var = mean(var)` to do.
+:::
+
+### Make a grouping variable #3
+
+Last but not least, we may want to assess if the individual has a cholesterol concentration higher than the 3rd quartile of *her own age class*.
+
+To do so, we introduce the syntax: `by()`, which allows to compute statistics by group. It can be used in two ways:
+
+-   Either as an option: `function var, by(sex)`
+-   Either in a prefix, with a sort command: `by sex, sort: function var`
+
+I prefer the second option as it is more flexible in more advanced use we will eventually see.
+
+::: callout-tip
+## Exercise
+
+Create the aforementioned variable.
+:::
+
+## A word on locals
+
+Throughout our use of Stata, we are going to use `locals`. These are object that are stored in the memory of Stata right after certain commands are ran and can be called in code.
+
+The most common use of locals is after a `summarize var, detail` command is ran. If you check at the end of the help of `summarize`, you see that many results are stored. You can called those stored results within the next run-down of code.
+
+Hence, for our variable above or below the mean it becomes very handy:
+
+``` markdown
+qui sum weight, d
+gen weight_abvmean = weight > `r(mean)' 
+```
+
+Notice the little trick here. For dummary variable, I directly put the condition to have 1 if true and 0 otherwise.
+
+We could have used the local in the loop as well:
+
+``` markdown
+use https://www.stata.com/users/youtube/rawdata.dta, clear
+        
+destring chol, replace
+        
+cap drop floored_chol
+gen floored_chol = .
+        
+qui sum chol, d
+local min_chol = floor(r(min)/10)*10
+local max_chol = ceil(r(max)/10)*10
+local step = 10
+                
+forval x = `min_chol'(`step')`max_chol'{
+    qui replace floored_chol = `x' if inrange(chol,`x',`x'+9)
+}
+```
+
+Altough it seems a bit more challenging, it ensures a large flexibility.
+
+## More on loops
+
+Loops are extremely common in Stata. We saw the most simple loops: the ones that run through numbers with specific steps.
+
+However, a loop can run through other objects, and especially lists. For instance, you can run a loop across variables:
+
+``` markdown
+foreach x of varlist id-chol{
+    your code ...
+}
+```
+
+You can run through any types of list:
+
+``` markdown
+foreach x in "a b c"{
+    your code ...
+}
+```
+
+## Locals vs. globals
+
+As mentioned earlier locals are stored temporarily right after the code has ran. If you want to store something for a longer period, you can create a global using `global gl_name = xxx`.
+
+For instance, I like to create a global containing the path of my working directory: `global path = "C:/Users/mateomoglia/..."`. Hence, I can call it later on the the `$path` symbol.
+
+For instance, we can create a global `global sexes = "Male Female"` and use it in a loop:
+
+``` markdown
+foreach x of global sexes{
+    some code ...
+}
+```
+
+## Manipulate string variables
+
+Manipulate string variables is extremely useful. In the dataset on health, we have the column containing the date of birth.
+
+### Extract letters
+
+Using the function `substr(var,pos_start,pos_end)`, we can extract the first three letters of the month of birth. Using `touuper(var)`, you can put those three letters in capital letters, in accordance of the standard ISO practice
+
+### Extract words
+
+Instead of extracting the first three letters, let's imagine we want to extract the first word. Because words are separated by spaces, we need to use `substr(dob,1,position of the space - 1)`. To know the position of the space, we use `strpos(dob," ")`.
+
+## Database size manipulation
+
+For this part, we are going to use the built-in `uselifeexp.dta` database. First, we describe the data. We have, per year, the life expectancy for the overall population LE, and then the LE by gender, race, and gender-race.
+
+### Reshaping
+
+The dataset is wide: for each ID (here the year) we have several variables. Let's assume we want to make it long, having a same ID repeated several time (one for each type).
+
+In Stata, this operation is called reshaping. A lot of memes have been made about it because no one knows how to do it without seeking for help.
+
+``` markdown
+rename le le_all // Otherwise, the variable is already defined
+reshape long le@, i(year) j(type) string
+```
+
+The syntax is simple:
+
+-   `reshape long` if we want to do wide \> long and `reshape wide` to do long \> wide.
+-   The `@` indicates the function the starting position of the suffix
+-   The option `i()` contains the ID variables, which are not going to change
+-   The option `j()` is the name of the newly created variable (here the one that will contain the type)
+-   The option `string` is needed if the suffix contains letters
+
+In the end, we obtain three columns: `year`, `le` containing the value for LE, and `type` with the associated type.
+
+### Collapsing
+
+Now, let's say we want to compute the average life expectancy by group and by decade. First, we create the decade variable: `gen decade = floor(year/10)*10`. Then, we use the super useful function `collapse (mean) le, by(decade type)`.
+
+Check the documentation for the function to see all you can do with it!!
+
+### Merging/Appending
+
+As we noticed, you can open only one dataset at a time in Stata. To join two or more datasets, two options exist:
+
+#### Merging
+
+The syntax is \`merge m:m common_var, using "/path/to/the/merged/dataset".
+
+The merged dataset has to be in `.dta` format and contains the specified common variables (at least one) and no other conflicting variables.
+
+Several joints exist:
+
+-   `1:1`: exactly one obs. in `df1` will be merged to exactly one obs. in `df2`
+-   `1:m` and `m:1`: one obs. can be matched to several in the other dataset
+-   `m:m`: the most flexible and less precise, any obs. can be matched with any obs.
+
+`merge` will create a new column `_merge` (name can be changed with the option `gen(name_of_merge_column)`) that tags observations that were merged and those unmerged from the master and from the merged datasets.
+
+An exercise will arrive to try the command.
+
+#### Appending
+
+The syntax \`append using "/path/to/the/appended/dataset". It stacks two datasets one over the other. They need to have the same column names. If it is not the case: the missing column is filled with NAs.
+
+## Store temporary datasets
+
+From times to times, it is handy to store in the cache memory the dataset to call it later. 
+
+### Use a `tempfile`
+
+Let's say you want to create a subset of a dataset, save it temporarily (instead of saving it on your hard disk), and then append it to another dataset.
+
+````markdown
+use data.dta, clear
+
+drop if gender == 0
+
+    /*--- some data cleaning ---*/
+
+tempfile temp_file
+save `temp_file'
+
+use data.dta, clear
+
+drop if gender == 1
+
+    /*--- some data cleaning ---*/
+
+append using `temp_file'
+```` 
+
+### Use a preserve
+
+In this case, let's say you want to compute an intermediary summary statistics, save it, and go back to the "main" dataset. Then, you can preserve your data, do some computations, and then restore it:
+
+````markdown
+use auto.dta, clear
+
+    /*--- some code ---*/
+
+preserve
+collapse price, by(foreign)
+save $path/temp/price_by_foreign.dta, replace
+restore
+
+    /*--- continue the code ---*/
+
+````

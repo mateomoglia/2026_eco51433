@@ -1,0 +1,379 @@
+---
+title: "Data visualization"
+format: html
+editor: visual
+toc: true
+toc-title: ""
+toc-location: right
+---
+
+We are going to make some data visualization. Disclaimer: most of the material is adapted from [this link](https://libguides.princeton.edu/visualization_stata). I simply adapt the 
+
+## General remarks
+
+To make a graph, the standard approach is as for command: `graph_command variable, options`. You may want to overlay several plots due to the way your data are built or depending on your needs (eg, a bar chart and a line plot). Hence, you need to use either `twoway (graph_command1 var1, options1) (graph_command2 variable2, options2), general_options`. 
+
+Good practice for graphs: always a legend, straightforward interpretation, not too much information. 
+
+Stata has some built-in "looks" for graphs, called scheme. Take a look [here](https://www.stata.com/manuals/g-4schemesintro.pdf) to have an overview of the various schemes. I personally like the factory one, but we are going to check how to improve the look of the graphs.
+
+## Scatter plots
+
+The command is `scatter`, usually abbreviated in `sc`. It requires two variables: `y` and `x` (in this order).
+
+````markdown
+use https://dss.princeton.edu/training/wdipol.dta
+keep if year == 2012 // keep one year only
+
+sc import export // Not super clear
+
+gen limport = log(import) // Make them log to improve readability
+gen lexpot = log(export)
+````
+
+We can add various options: 
+
+````markdown
+sc limport lexport, mcolor(cranberry) msymbol(Oh) mlwidth(0.1) xtitle("Export (USD, log)") ytitle("Export (USD, log)")
+sc limport lexport, mc(cranberry) m(Oh) mlw(0.1) xti("Export (USD, log)") yti("Export (USD, log)")
+tw (sc limport lexport, mcolor(cranberry) m(Oh) mlw(0.1) xti("Export (USD, log)") yti("Import (USD, log)") yaxis(1)) (sc gdppc limport , yaxis(2)), legend(pos(6))
+```` 
+
+We add several options to choose the colour, the type of symbol, the width of the symbol, and adapt the legends. Notice the `legend(pos(6))` on the last scatter plot. This is a special case of "option of option". Here, the position of the legend, at 6-hour (so in the bottom).
+
+A last, interesting version could be:
+
+````markdown
+tw (sc limport lexport, mcolor(cranberry) m(Oh) mlw(0.1) xti("Export (USD, log)") yti("Import (USD, log)") yaxis(1)) (sc gdppc limport, yaxis(2) mc(navy) m(Dh) mlw(0.1)), legend(pos(6) cols(2) order(1 "Import (USD, log)" 2 "GDP pc (USD)"))
+```` 
+
+Many, many options exist. Try to run `help sc` or any type of graphs and navigate through. 
+
+:::callout-tip
+Based on the last code, can you add an additional element: a regression line for `limport` and `lexport`. 
+
+1.    Overlay a third element thanks to (lfit y x)
+2.    Make this line the same color as the points
+3.    Do not forget to adapt the legend with the option `order()`
+:::
+
+
+## Bar graph and histograms
+
+Making histogram is easy with the function `hist`:
+
+````markdown
+hist gdpcc
+hist gdpcc, frequency
+hist gdpcc, kdensity
+hist gdpcc, kdensity normal
+````
+
+This latter approach is not highly flexible in terms of legend:
+
+````markdown
+hist gdppc, $histopts kdensity normal kdenopts(lc(cranberry)) normopts(lc(navy))
+	
+qui sum gdppc, d
+tw (hist gdppc, $histopts) ///
+   (kdensity gdppc, lc(cranberry)) ///
+   (function y=normalden(x, `r(mean)', `r(sd)'), range(`r(p1)' `r(p99)') lc(navy)), ///
+   legend(pos(6) cols(2) order(2 "Kernel density" 3 "Normal distrib."))
+```` 
+
+We can also do it for groups of country (with an alternative syntax for twoway graphs):
+
+````markdown
+twoway hist gdppc if country=="United States", bin(10) || ///
+       hist gdppc if country=="United Kingdom", bin(10) ///
+       fcolor(none) lcolor(red) legend(label(1 "USA") label(2 "UK"))
+```` 
+
+We can also make bar chart to plot the GDP of all countries:
+
+````markdown
+graph hbar (mean) gdppc, over(country, sort(1) descending label(labsize(*0.50)))
+
+graph hbar (mean) gdppc if gdppc>18000, ///
+over(country, sort(1) descending label(labsize(*0.7))) ///
+bar(1, color(ebblue))
+
+graph hbar (mean) gdppc (median) gdppc if gdppc>18000, ///
+over(country, sort(1) descending label(labsize(*0.8))) ///
+legend(label(1 "GDPpc (mean)") label(2 "GDPpc (median)")) ///
+bar(1, color(blue)) ///
+bar(2, color(brown))
+```` 
+
+Here, we use the super useful `over()` syntax, which allows to plot for several countries _over_ the same graphs. Another example:
+
+````sysuse auto.dta
+graph bar (mean) price, over(foreign) 
+```` 
+
+## Box plots
+
+We can make box plots:
+
+````markdown
+gen lgdppc = log(gdppc)
+gen ltrade = log(trade)
+
+graph box lgdppc ltrade
+```` 
+
+:::callout-tip
+## Exercise
+
+Make a box plot with the variables you want, eg. log import/export or trade. 
+
+1.    Read carefully the help for `graph box`
+2.    Change the appearance (color) of the two bars
+3.    Change the width of the graph
+4.    Put the legend below and on two columns
+5.    Add a _beautiful_ title
+:::
+
+
+## Line charts
+
+Another interesting data visualization is the line chart. It is especially useful when you have panel data or time series. Usually, on the x-axis, there are the years, and the y-axis the values per year. 
+
+Here, we use the life expectancy database with `sysuse uslifeexp.dta`. 
+
+The syntax to make a line is very simple:
+
+````markdown
+line le year // always the y axis last
+line le_male le_female year 
+````
+
+Depending on the need, an alternative exists and is useful as well:
+
+````markdown
+sc le_male le_fem year, connect(l l) // use connect() with to "l" to connect both series
+```` 
+
+We can improve the graph in three ways:
+
+-   Put the legend inside the graph and improve the labelling
+-   Change the color 
+-   Add an arrow
+
+````markdown
+line le_male le_female year, ///
+			legend(pos(0) bplacement(4)) ///
+			title("{bf:Life expectancy} in the 20th century") ///
+			note("US Census data") ///
+			ylab(,nogrid) xlab(,nogrid)
+````
+
+Notice that we also removed the grid behind and put the title in bold. 
+
+````markdown
+// Change the appearance of the lines
+line le_male le_female year, ///
+	lc(green cranberry) lp(longdash longdash_dot) ///
+	legend(pos(0) bplacement(4)) ///
+    title("{bf:Life expectancy} in the 20th century") ///
+	note("US Census data") ///
+	ylab(,nogrid) xlab(,nogrid)
+```` 
+
+The drop in life expectancy is due to the Spanish flu in 1919. We add an arrow to higlight it:
+
+````markdown
+tw (line le_male le_female year, lc(green cranberry) lp(longdash longdash_dot)) ///
+   (pcarrowi 45 1930 40 1919 (2) "Spanish flu", color(black) mlabcolor(black)), ///
+   legend(order(1 2) pos(0) bplacement(4)) ///
+   title("{bf:Life expectancy} in the 20th century") ///
+   note("US Census data") ///
+   ylab(,nogrid) xlab(,nogrid)
+```` 
+
+## Regression coefficients
+
+Regression coefficients can be plotted along with their confidence intervals. Most of the content is taken from this [blog](https://medium.com/the-stata-gallery/making-regression-coefficient-plots-in-stata-7b100feac0cb).
+
+The package to make coefficient plot is `coefplot`, you need to install: `ssc install coefplot`. As in the blog, I use the `auto` dataset:
+
+````markdown
+sysuse auto.dta, clear
+
+// We can set all variables from a 0-1 scale
+qui sum mpg // necessary for next line to work
+gen mpg_01=(mpg-r(min)) / (r(max)-r(min)) // subtracts min and divides by range
+
+qui sum weight
+gen weight_01=(weight-r(min)) / (r(max)-r(min))
+
+qui sum length
+gen length_01=(length-r(min)) / (r(max)-r(min))
+````
+
+We first run some regressions:
+
+````markdown
+reg price mpg_01 weight_01 length_01 i.foreign
+coefplot
+```` 
+
+while we do not run any other regressions, we can build the coefplot based on it. 
+
+:::callout-tip
+Remember we used the `eststo: reg y x, options` before to save regressions. If you want to use the stored regression output to make a coefplot, you can use it as an argument in `coefplot est1`. You can also restore the results by writing `estimates restore est1`. This is also useful to use the `r()` and `e()` elements.
+:::
+
+````markdown
+reg price mpg_01 weight_01 length_01 i.foreign, rob
+		
+		* Make a first coefplot
+		coefplot
+		
+		* Add a xline at 0 and remove constant
+		global coefplotopts = "drop(_cons) xline(0, lcolor(red) lwidth(medium))"
+		
+		coefplot, ///
+			$coefplotopts ///
+			coeflabels(mpg_01="MPG" weight_01="Weight" length_01="Length")
+			
+			
+		* Make a more complicated regression
+		reg price mpg_01 weight_01 length_01 i.foreign i.foreign#c.mpg_01, coeflegend
+
+		coefplot, $coefplotopts ///
+			coeflabels(mpg_01="MPG" weight_01="Weight" length_01="Length" 1.foreign="Foreign" ///
+			1.foreign#c.mpg_01="MPG X Foreign")
+		
+		* Enhance the graph
+		coefplot, $coefplotopts ///
+			xtitle("{bf: Effect on Vehicle Price}") /// bolded text
+			graphregion(margin(medsmall)) ///
+			xlab(, nogrid) /// no vertical grid
+			ylab(, glpattern(dash) glcolor(gs14)) /// horizontal grid options
+			coeflabels(mpg_01="MPG"  length_01="Length" weight_01="Weight" 1.foreign="Foreign" ///
+			1.foreign#c.mpg_01=`""MPG X" "Foreign""') ///
+			headings(mpg_01= "{bf: Vehicle Specs}" /// creates headings
+			1.foreign = "{bf: Production Info}" 1.foreign#c.mpg_01 = "{bf: Interactions}", gap(0)) 
+````
+
+:::callout-tip
+## Exercise
+
+Does trade openness correlate with life expectancy? We use two datasets: the `wdipol` dataset we used before and a World Bank dataset containing life expectancy across the years.
+
+1.    Download, save, and open the World Bank dataset [here](https://api.worldbank.org/v2/en/indicator/SP.DYN.LE00.MA.IN?downloadformat=csv).
+2.    Keep only the country names and the columns that start with `v` (except `v70`)
+3.    Using a loop rename the `v` variables into `le_maleyyyy` 
+4.    Reshape to a long format (new column: year)
+5.    Save as temporary file
+
+By now you should have a file that looks like:
+
+````
+
+. list in 1/10
+
+     +------------------------------+
+     |     country   year   le_male |
+     |------------------------------|
+  1. | Afghanistan   1960    32.136 |
+  2. | Afghanistan   1961    32.626 |
+  3. | Afghanistan   1962    33.098 |
+  4. | Afghanistan   1963    33.543 |
+  5. | Afghanistan   1964    34.004 |
+     |------------------------------|
+  6. | Afghanistan   1965    34.438 |
+  7. | Afghanistan   1966    34.877 |
+  8. | Afghanistan   1967    35.324 |
+  9. | Afghanistan   1968    35.825 |
+ 10. | Afghanistan   1969    36.287 |
+     +------------------------------+
+```` 
+
+1.    Open the trade data, keep only country, year, export and import
+2.    Compute the openness (the share of export in total export+import)
+3.    Drop if openness is missing
+4.    Merge with the life expectancy data
+5.    Keep only merged observations
+6.    Count the number of observations by country (hint: use `gen count = _N` but by group)
+7.    Using a local, keep only countries with the maximum of appearance in the panel
+
+By now, your dataset should look like that:
+
+````
+
+     +-------------------------------------------------------------------------------------+
+     | year     country      export      import   openness   le_male        _merge   count |
+     |-------------------------------------------------------------------------------------|
+  1. | 1980   Australia   32720.597    26890.83    .548898     70.88   Matched (3)      33 |
+  2. | 1981   Australia   31132.097   29423.028   .5141117      71.2   Matched (3)      33 |
+  3. | 1982   Australia    31867.06   32823.251   .4926095      71.5   Matched (3)      33 |
+  4. | 1983   Australia   32032.664   30058.226   .5158996      71.8   Matched (3)      33 |
+  5. | 1984   Australia   34477.203   31856.781   .5197517      72.1   Matched (3)      33 |
+     |-------------------------------------------------------------------------------------|
+  6. | 1985   Australia   39800.054   37146.973   .5172396      72.4   Matched (3)      33 |
+  7. | 1986   Australia   41306.001   37056.342   .5271155      72.7   Matched (3)      33 |
+  8. | 1987   Australia   45447.108   35304.664   .5628001     73.02   Matched (3)      33 |
+  9. | 1988   Australia   49287.526   39266.643   .5565805     73.34   Matched (3)      33 |
+ 10. | 1989   Australia    49803.35   49069.632   .5037104     73.66   Matched (3)      33 |
+     +-------------------------------------------------------------------------------------+
+```` 
+
+We would like to compute summary statistics **by continent**.
+
+1.    Define the following globals
+
+````markdown
+		global europe = "Australia Austria Belgium Bulgaria Denmark Finland France Greece Italy Luxembourg Netherlands Norway Portugal Sweden"
+		global africa = `" "Congo, Dem. Rep." "Congo, Rep." "Kenya" "Lesotho" "Mauritania" "Mauritius" "Morocco" "Mozambique" "Rwanda" "South Africa" "Tunisia" "'
+		global asia = "Bangladesh India Indonesia Jordan Malaysia Pakistan Singapore Thailand"
+		global latam = `" "Bolivia" "Brazil" "Chile" "Colombia" "Costa Rica" "Dominican Republic" "Ecuador" "El Salvador" "Guatemala" "Honduras" "Mexico" "Nicaragua" "Panama" "Peru" "Philippines" "Uruguay" "'
+```` 
+
+2.    Using 4 loops, fill a variable called `continent` with the name of the continent
+3.    Save as temporary file
+
+It should look like that:
+
+````
+. list country continent in 1/10, c
+
+     +--------------------+
+     |   country   cont~t |
+     |--------------------|
+  1. | Australia   Europe |
+  2. | Australia   Europe |
+  3. | Australia   Europe |
+  4. | Australia   Europe |
+  5. | Australia   Europe |
+     |--------------------|
+  6. | Australia   Europe |
+  7. | Australia   Europe |
+  8. | Australia   Europe |
+  9. | Australia   Europe |
+ 10. | Australia   Europe |
+     +--------------------+
+```` 
+
+1.    Make a scatter plot between life expectancy and openness in 2012
+2.    Make a scatter plot between life expectancy and openness in 1980 and 2012
+3.    Using `lfitci` add a confidence interval to the first plot. In the legend, keep only the entry for the linear fit and the points. Add a note below the graph stating "95% confidence interval."
+4.    Export as `.pdf`
+
+Now we want to compute and plot the mean of life expectancy per continent and per year.
+
+0.    Using the `preserve`/`restore` syntax, keep the main dataset in cache throughout the exercise.
+1.    Collapse life expectancy and openness by continent and year. Compute the mean and the median. 
+2.    With a two-axis plot, plot the variation in openness and life expectancy in Asia. 
+3.    Make a plot with 4 quadrants depicting the same relationship for the 4 continents
+
+Finally, we would like to regress and plot the coefficient
+
+1.    Regress life expectancy on openness with the option `, r`
+2.    Add a dummy for each continent. What do you need to do first?
+3.    Add a yearly dummy
+4.    Make a plot with the last regression with only openness and the continent dummy.
+5.    Make a plot to compare the coefficients for openness across all three regressions.
+
+:::

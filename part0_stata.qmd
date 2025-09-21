@@ -1,0 +1,125 @@
+---
+title: "First hand on Stata"
+format: html
+editor: visual
+toc: true
+toc-title: ""
+toc-location: right
+---
+
+In this part, we open Stata and familiarize with the software. Stata is a proprietary software, first released in 1985. As of today, Stata version is Stata 19. 
+
+## General philosophy
+
+The idea is to open one dataset at a time and apply a number of commands on this dataset. As opposed to object-based languages, Stata can deal with only one dataset at a time.
+
+Code is written on a script called a **do-file**. It can be ran entirely or line by line. Each line is a different command. 
+
+They key advantage of Stata is the efficiency to run econometrics tasks as opposed to R and Python. Personnaly, I find it more intuitive. On top of that, it is easier to export output in `.tex` or image formats. 
+
+## Best practice
+
+Before jumping to coding *per se*, let me recall you some best practices when performing computer-based tasks. Knowing those practices is relevant for several reasons:
+
+-   Save yourself time in the future: it might me bothersome at first, but the future you will thank the current you
+-   Research reproducibility is a high-stake aspect of research
+-   IT is probably more pleasant to work in a tidy and clean environment than in a messy one
+
+### Folder organization
+
+Computers are organized around folders. We are going to work in a working directory (`wd`), but we need to identify it. My folder tree looks like it:
+
+``` plaintext
+/Users/mmoglia/Dropbox/
+├── Documents/
+│   ├── perso/
+│   │   ├── banque/
+│   │   ├── admin/
+│   │   └── festival/
+├── Downloads/
+├── Music/
+├── Pictures/
+│   ├── famille/
+│   ├── vacances/
+└── courses/
+│   ├── polytechnique/
+|   |   ├── 2024_eco102/
+|   |   ├── 2025_eco1s002/
+|   |   ├── 2026_eco51423ep/
+├── research/
+```
+
+Here we are going to work in `~/courses/2026_eco51423ep/`. This folder may (and should!) contains subfolders, for instance: `/code`, `/output`, `/raw_data`, etc. Each time I start a project, I always create those ones -- with a similar naming conventions in all my projects. I stick to these rules to save time when navigating between projects (and when changing computers).
+
+### Naming convention
+
+A typical tip is to choose simple and short titles for the files and the scripts. For instance, this file is named `part0_r.qmd`. Your code can be named `code_tutorial.R`. It should be self-explanatory.
+
+::: callout-tip
+Avoid at all cost to use spaces or special characters in your file names. Prefer instead an underscore.
+:::
+
+### When writing code
+
+-   **Always** comment your code, make it readable for your future self but also for others. You may use your code in a week, a month, a year, and should be able to directly understands it! Comments in Stata starts with `*` or `//` or are put between `/* comment */`.
+
+-   When creating variables and files give them simple but understandable names.
+
+-   For instance, if you create a dataset containing wages for individuals aged between 25 and 30, you way call it `wage_25_30` and not `w2530` (too short) or `wage_individuals_aged_25_30` (too long).
+
+-   Moreover, especially for large project, you want to have different scripts. Always keep scripts short and with clear names. For instance `1_clean_data.do`, `2_import_wages.do`, `3_merge_datasets.do`, and `4_data_analysis.do`.
+
+## Open a do-file
+
+We open Stata and open our first do-file. We provide some indication on what we aim to do and perform our first data manipulation.
+
+### Describe the code
+
+To comment a line we can use `*` or `//`. To comment a block of code, you have to put it between `/* The code you which to comment out */`.
+
+````markdown
+/*_______________________________________
+
+    This code aims to open the auto dataset and
+    clean it 
+
+_______________________________________*/
+
+    * Load the data
+    sysuse auto.dta // Open the auto dataset
+````
+
+### Run lines
+
+To run the do-files, you can either select all lines and press `CTRL + D` or select a line and run the latter command.
+
+By default Stata is going to print every output you run. If you to run a line but make the output salient (for instance because you want to extract a result but do not need to see the output to keep your log clean), you can start the line with `quietly: ` or put the whole code in brackets: `quietly{ a long code bunch }`. 
+
+### Logs 
+
+You will see that when running the lines of code, output will be printed in the main window. To keep track of the output and code producing the output, you may want to create a log file.
+
+:::callout-tip
+## Tip
+To seek for help, you can type `help command` in the Console. For instance, for log, you can write `help log`. 
+:::
+
+### Syntax
+
+The syntax is -almost- always the same in State:
+
+````markdown
+function var, options
+````
+
+You start off with the name of the function, for instance `sysuse`, then the name of the variable(s) (or the object, the path, etc.), here `auto.dta`, and you finish with the potential options after a comma. 
+
+It is also worth noting that most Stata functions have shortcuts. For instance, the function `regress`, which, as you may have understood, is useful to regress works also with `reg`. The function `summary` can be shortcut with `su`. 
+
+It goes the same with some options and for most variables names, as long as there is no ambiguity. 
+
+Lastly, you can use `*` as a joker for a letter in a variable names. Let's say you have columns `popmun2007`, `popmun2008`, etc. until `popmun2020`. If you want to summarize those 13 variables you can:
+
+-   Use `summarize popmun2007 popmun2008 popmun2009 popmun2010 popmun2011 popmun2012 popmun2013 popmun2014 popmun2015 popmun2016 popmun2017 popmun2018 popmun2019 popmun2020`
+-   Use `summarize popmun2007-popmun2020` *if the columns are in that order!*
+-   Use `summarize popmun*` as token

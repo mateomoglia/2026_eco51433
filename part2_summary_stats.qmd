@@ -1,0 +1,233 @@
+---
+title: "Summary statistics"
+format: html
+editor: visual
+toc: true
+toc-title: ""
+toc-location: right
+---
+
+In this short part, we are going to learn how to make summary statistics, especially by group, to export them in `.tex` format.
+
+## Simple statistics
+
+We use the very standard and famous `auto.dta` database:
+
+``` markdown
+    // Load the data
+sysuse auto, clear
+
+    // Take a quick look at the data
+describe
+summarize
+list in 1/10
+```
+
+We are going to make simple summary statistics first:
+
+``` markdown
+summarize price
+summarize price, detail
+```
+
+To make it more compact and to have several variables: `tabstat`.Use by() to split by a categorical variable, `tabstat` gives flexible stats and layout:
+
+``` markdown
+tabstat price mpg weight length, statistics(mean sd min p50 max n) columns(statistics)
+tabstat price mpg weight, by(foreign) statistics(mean sd p50 n) columns(statistics)
+```
+
+To make it frequency tables, we can use `tabulate` with one or two variables:
+
+``` markdown
+tabulate foreign
+tabulate foreign rep78, row column
+```
+
+If you want summary statistics (e.g., mean of mpg) by category use tabulate with `summarize()`:
+
+``` markdown
+tabulate foreign, summarize(mpg)
+```
+
+To make simple comparison t-test (mean of price by foreign):
+
+````markdown     
+ttest price, by(foreign) unequal
+````
+
+## LaTeX export
+
+There are two widely used approaches: `estpost` + `esttab` (from the `estout` package) — flexible, works with summarize, tabstat, tabulate, ttest, etc., and can write LaTeX directly. 
+
+:::callout-tip
+## Install packages
+A large amount of work can be achieved with base Stata (historically user-written packages have been added to the "main" Stata version). However, some packages have to installed before hand. You need to do it only once on your computer. To use the aforementioned packages, you need to install them. To do so:
+
+````markdown
+ssc install estout
+````
+
+:::
+
+Here is a short summary of the key `estout` commands:
+
+-   Clear any stored estimates: `eststo clear` (shortcut for `estimates store clear`)
+
+-   Post summary stats (overall) `estpost summarize price mpg weight length, listwise`
+
+-   Write LaTeX table (replace file if exists) 
+
+````markdown
+esttab . using "summary_overall.tex", replace /// 
+    title("Summary statistics (overall)") /// 
+    cells("count(fmt(%0.0f)) mean(fmt(%9.2f)) sd(fmt(%9.2f)) min(fmt(%9.0f)) p50(fmt(%9.2f)) max(fmt(%9.0f))") /// 
+    label booktabs noobs nomtitle
+````
+
+This creates `summary_overall.tex` you can `\input{}` into your LaTeX document. 
+
+:::callout-tip
+Notice the use of `///` at the end of the line. It breaks long line of code. Hence, you need to run all the code bunch. In more recent of Stata, the lines break automatically.
+:::
+
+It also works by group: let's say you want the mean and standard deviation of `price`, `mpg`, and `weight` by `foreign`:
+
+-   `estpost tabstat price mpg weight, by(foreign) statistics(mean sd p50 n) nototal columns(statistics)`
+
+-   Export to LaTeX `esttab . using "summary_by_foreign.tex", replace cells(mean sd) label nogaps booktabs noobs nomtitle`
+
+This produces a LaTeX table where each group appears and mean/sd are shown. Note that you can export in other text formats `.txt`, `.smcl` (the Stata format), `.xlsx`, etc. 
+
+Finally, we can export a frequency table for `foreign`:
+
+````markdown
+estpost tabulate foreign 
+esttab . using "freq_foreign.tex", replace /// 
+cells("b(lab(freq)) pct(fmt(2))") label booktabs noobs nomtitle
+```` 
+
+## Regression tables 
+
+To make regression tables, we need to make regressions! The function is simple: `regress y x, options`, usually abbreviated with `reg`. Many other functions exist: `areg`, `ivregress`, `reghdfe`, etc. depending on the model you want to use but this is beyond the scope of this lecture. 
+
+Let's run some simple example by assessing the correlation between the cars' characteristics and their price. Hence, the model writes:
+
+$$
+\texttt{price}_i = \beta_0 + \beta_1 \texttt{foreign}_i + \beta_2 \texttt{mpg}_i + \texttt{rep78}_i + e_i
+$$
+
+The associated Stata code is:
+
+````markdown
+sysuse auto.dta, clear
+
+reg price i.foreign mpg i.rep78
+````
+
+:::callout-tip
+We use the `i.` operator because `foreign` and `rep78` are discrete variables (even though coded as a numeric).
+:::
+
+We also want to estimate the same model and include the interaction between foreign and mpg, to check if the gasoline consumption differs by origin. 
+
+$$
+\texttt{price}_i = \beta_0 + \beta_1 \texttt{foreign}_i + \beta_2 \texttt{mpg}_i + \beta_3 \texttt{foreign}_i \times \texttt{mpg}_i + e_i
+$$
+
+The Stata code with the interaction term writes:
+
+````markdown
+reg price i.foreign mpg i.rep78 i.foreign#c.mpg
+````
+
+Notice that we use the `c.` operator to ensure that mpg is considered as a numeric variable and such that the interaction is not done on _all_ combinations of `foreign` and `mpg`.
+
+Now that we ran our models, how to export the results to LaTeX? We use the `estimates store`, abbreviated in `eststo`, syntax. Two ways to proceed:
+
+````markdown
+eststo: reg price i.foreign mpg i.rep78 i.foreign#c.mpg
+
+    /* or */
+
+reg price i.foreign mpg i.rep78 i.foreign#c.mpg
+eststo 
+
+    /* if we want to give a name */
+eststo my_name : reg price i.foreign mpg i.rep78 i.foreign#c.mpg
+reg price i.foreign mpg i.rep78 i.foreign#c.mpg
+eststo my_name
+```` 
+
+While Stata is opened and no `eststo clear` is ran, we can print again the results by `esttab est1`. To export the results, we also use `esttab` with options, notably the `tex` or preferably the `booktabs` options (better LaTeX rendering). 
+
+````markdown
+        eststo no_inter: reg price i.foreign mpg i.rep78
+		eststo inter:    reg price i.foreign mpg i.rep78 i.foreign#c.mpg
+		
+		esttab no_inter inter
+		
+		esttab no_inter, booktabs // make it LaTeX
+		esttab no_inter, booktabs se // add the SE
+		esttab no_inter, booktabs se(%9.0f) drop(_cons) // format of se + drop cons
+		esttab no_inter, booktabs se(%9.0f) drop(_cons) star(* 0.1 ** 0.05 *** 0.001) // change sig stars
+		esttab no_inter, booktabs se(%9.0f) drop(_cons) star(* 0.1 ** 0.05 *** 0.001) ///
+			r2 indicate("Repair record dummies = *.rep78") // add R2 and add a "Yes/No" ligne for dummies
+		esttab no_inter, booktabs se(%9.0f) drop(_cons) star(* 0.1 ** 0.05 *** 0.001) ///
+			r2 indicate("Repair record dummies = *.rep78") ///
+			label // add labels
+		esttab no_inter, booktabs se(%9.0f) drop(_cons) star(* 0.1 ** 0.05 *** 0.001) ///
+			r2 indicate("Repair record dummies = *.rep78") ///
+			label nobaselevels // no base levels
+			
+		esttab no_inter inter, booktabs se(%9.0f) drop(_cons) star(* 0.1 ** 0.05 *** 0.001) ///
+			r2 indicate("Repair record dummies = *.rep78") ///
+			label nobaselevels // for two models
+		esttab no_inter inter, booktabs se(%9.0f) drop(_cons) star(* 0.1 ** 0.05 *** 0.001) ///
+			r2 indicate("Repair record dummies = *.rep78") ///
+			label nobaselevels nonum // no model num
+		esttab no_inter inter using $path/output/reg.tex, booktabs se(%9.0f) drop(_cons) star(* 0.1 ** 0.05 *** 0.001) ///
+			r2 indicate("Repair record dummies = *.rep78") ///
+			label nobaselevels nonum replace // no model num + latex export
+```` 
+
+## Advanced users
+
+A package I particularly like is `tabout`, which documentation can be found [here](https://tabout.net.au/downloads/tabout_user_guide.pdf). It is not straightforward to use but comes very handy to make complex descriptive statistics table.
+
+## Exercise
+
+To wrap up on data manipulation and summary statistics, we are going to make an exercise using first the built-in `census.dta`.
+
+1.  Set-up your dofile and create two globals: one containing your path and one containing the string "1980 2010"
+2.  Tabulate the region name (there are four census regions in the US: Northwest, Midwest, West and South)
+3.  Regions' names are not informative enough: create a new label containing the right regions' names and update the `region` label.
+4.  Using `decode var, gen(new_var)`, create a new variable containg the regions' names as string 
+5.  Keep only the `state`, `region` and `pop` variables
+6.  Rename `pop` to `pop1980`
+7.  Save in `your/path/temp/census1980.dta`
+
+Now we are going to use another dataset, an Excel file.
+
+1.  Open the `nst-est2019-01.xlsx` from the raw data folder using `import excel` and the path you created! Pay attention to the range you want to open: we keep only A10 to B60
+2.  Rename the first two columns `state` and `pop2010`
+3.  State names all start with a ".". Using `subinstr` command, remove the dots
+4.  Save in `your/path/temp/census2010.dta`
+
+Now we merge the two datasets.
+
+1.  Clear the open datasets, open `census2010.dta` and merge with `census1980.dta` with `m:m` and `state` as joining variable. What happened? Tabulate `_merge` to investigate a bit more.
+2.  Some states are not named the same depending on the dataset. Write a loop that runs through the `year` global: open the dataset, replace "W." by "West", "S." by "South", and "N." by North, save the dataset.
+3.  Merge the datasets. Remove the only non-merged observation.
+
+Finally, we make some descriptive statistics:
+
+1.  Compute the population change
+2.  Make a table summarizing (mean, sd and median) the change in population by region
+3.  Reshape the dataset in long format to have two lines per state: one for 1980 and one for 2010
+
+Bonus:
+
+1.  Collapse `change` by `region` (compute the mean)
+2.  Using `graph bar var, over(group)`, make a graph bar of change by region
+
