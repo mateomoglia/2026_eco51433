@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Data manipulation – Introduction to Stata</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-94ab712f215f0f28cf75fcc61d4e0fd5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./part1_data_manipulation.html">Data manipulation</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Introduction to Stata</a> 
+    </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./home.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Home</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./part0_stata.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">First hand on Stata</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./part1_data_manipulation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Data manipulation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./part2_summary_stats.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Summary statistics</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./part3_data_viz.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data visualization</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+   
+  <ul>
+  <li><a href="#open-and-describe-the-data" id="toc-open-and-describe-the-data" class="nav-link active" data-scroll-target="#open-and-describe-the-data">Open and describe the data</a>
+  <ul class="collapse">
+  <li><a href="#describe-the-data" id="toc-describe-the-data" class="nav-link" data-scroll-target="#describe-the-data">Describe the data</a></li>
+  </ul></li>
+  <li><a href="#data-cleaning" id="toc-data-cleaning" class="nav-link" data-scroll-target="#data-cleaning">Data cleaning</a>
+  <ul class="collapse">
+  <li><a href="#keepdrop" id="toc-keepdrop" class="nav-link" data-scroll-target="#keepdrop">Keep/drop</a></li>
+  <li><a href="#change-data-format" id="toc-change-data-format" class="nav-link" data-scroll-target="#change-data-format">Change data format</a></li>
+  <li><a href="#add-labels" id="toc-add-labels" class="nav-link" data-scroll-target="#add-labels">Add labels</a></li>
+  <li><a href="#add-value-labels" id="toc-add-value-labels" class="nav-link" data-scroll-target="#add-value-labels">Add value labels</a></li>
+  <li><a href="#create-a-variable" id="toc-create-a-variable" class="nav-link" data-scroll-target="#create-a-variable">Create a variable</a></li>
+  <li><a href="#make-a-grouping-variable-1" id="toc-make-a-grouping-variable-1" class="nav-link" data-scroll-target="#make-a-grouping-variable-1">Make a grouping variable #1</a></li>
+  <li><a href="#make-a-grouping-variable-2" id="toc-make-a-grouping-variable-2" class="nav-link" data-scroll-target="#make-a-grouping-variable-2">Make a grouping variable #2</a></li>
+  <li><a href="#make-a-grouping-variable-3" id="toc-make-a-grouping-variable-3" class="nav-link" data-scroll-target="#make-a-grouping-variable-3">Make a grouping variable #3</a></li>
+  </ul></li>
+  <li><a href="#a-word-on-locals" id="toc-a-word-on-locals" class="nav-link" data-scroll-target="#a-word-on-locals">A word on locals</a></li>
+  <li><a href="#more-on-loops" id="toc-more-on-loops" class="nav-link" data-scroll-target="#more-on-loops">More on loops</a></li>
+  <li><a href="#locals-vs.-globals" id="toc-locals-vs.-globals" class="nav-link" data-scroll-target="#locals-vs.-globals">Locals vs.&nbsp;globals</a></li>
+  <li><a href="#manipulate-string-variables" id="toc-manipulate-string-variables" class="nav-link" data-scroll-target="#manipulate-string-variables">Manipulate string variables</a>
+  <ul class="collapse">
+  <li><a href="#extract-letters" id="toc-extract-letters" class="nav-link" data-scroll-target="#extract-letters">Extract letters</a></li>
+  <li><a href="#extract-words" id="toc-extract-words" class="nav-link" data-scroll-target="#extract-words">Extract words</a></li>
+  </ul></li>
+  <li><a href="#database-size-manipulation" id="toc-database-size-manipulation" class="nav-link" data-scroll-target="#database-size-manipulation">Database size manipulation</a>
+  <ul class="collapse">
+  <li><a href="#reshaping" id="toc-reshaping" class="nav-link" data-scroll-target="#reshaping">Reshaping</a></li>
+  <li><a href="#collapsing" id="toc-collapsing" class="nav-link" data-scroll-target="#collapsing">Collapsing</a></li>
+  <li><a href="#mergingappending" id="toc-mergingappending" class="nav-link" data-scroll-target="#mergingappending">Merging/Appending</a></li>
+  </ul></li>
+  <li><a href="#store-temporary-datasets" id="toc-store-temporary-datasets" class="nav-link" data-scroll-target="#store-temporary-datasets">Store temporary datasets</a>
+  <ul class="collapse">
+  <li><a href="#use-a-tempfile" id="toc-use-a-tempfile" class="nav-link" data-scroll-target="#use-a-tempfile">Use a <code>tempfile</code></a></li>
+  <li><a href="#use-a-preserve" id="toc-use-a-preserve" class="nav-link" data-scroll-target="#use-a-preserve">Use a preserve</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Data manipulation</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>For the sake of this part, we are going to use several built-in datasets in Stata. We are going to use the Ile-de-France database I prepared for this class a bit later on.</p>
+<section id="open-and-describe-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="open-and-describe-the-data">Open and describe the data</h2>
+<p>To open the built-in data, we use <code>sysuse</code>. Otherwise, several other approaches exist:</p>
+<ul>
+<li>Standard approach to open <code>.dta</code> files (the Stata proprietary data format) is <code>use /path/mydata.dta</code>.</li>
+<li>Excel files are opened with <code>import excel /path/mydata.xlsx</code></li>
+<li>Delimited files are opened with <code>import delimited /path/mydata.csv, sep(",")</code></li>
+<li>Some files can be opened through internet <code>use www.linktodata.dta, clear</code></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Stata does not overwrite naturally variables or datasets, hence, you need to specificy <code>sysuse data, clear</code> if you want to overwrite the dataset you have opened before.</p>
+</div>
+</div>
+<section id="describe-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="describe-the-data">Describe the data</h3>
+<p>For this part, we are using <code>use https://www.stata.com/users/youtube/rawdata.dta, clear</code> as our dataset. It contains information on the health of individuals.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Open a dofile, clear all the memory by starting off with <code>clear all</code> and follow the instructions:</p>
+<ol type="1">
+<li>Open the <code>rawdata.dta</code> base with the link above</li>
+<li>Using <code>browse</code>, take a look at the data</li>
+<li>Using <code>describe</code>, take a look at the format</li>
+<li>Using <code>count</code>, print the observation number</li>
+<li>Using <code>tabulate</code>, print a frequency table for the sex</li>
+<li>Using <code>summarize</code>, print summary statistics for the cholesterol concentration. What do you notice?</li>
+</ol>
+</div>
+</div>
+</section>
+</section>
+<section id="data-cleaning" class="level2">
+<h2 class="anchored" data-anchor-id="data-cleaning">Data cleaning</h2>
+<p>The dataset obviously required some data cleaning.</p>
+<section id="keepdrop" class="level3">
+<h3 class="anchored" data-anchor-id="keepdrop">Keep/drop</h3>
+<p>Let’s assume we want to keep individuals aged more than 25 (which is equivalent to drop individuals aged below than 25).</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>keep if age &gt; 25</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>or: drop if age &lt;= 25</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We also want to drop if <code>dob</code> is missing, hence: <code>drop if missing(dob)</code>. Finally, we drop only Black and White: <code>keep if inlist(race,"White","Black")</code> or more directly <code>drop if race == "Other"</code>.</p>
+</section>
+<section id="change-data-format" class="level3">
+<h3 class="anchored" data-anchor-id="change-data-format">Change data format</h3>
+<p>As notice earlier, the cholesterol concentration is in string whereas it should be in numeric.</p>
+<p><code>destring cholesterol, replace</code> or create a new variable with <code>, gen(new_var)</code>.</p>
+</section>
+<section id="add-labels" class="level3">
+<h3 class="anchored" data-anchor-id="add-labels">Add labels</h3>
+<p>As you notice on the right panel, some variables do not have a label. Using <code>label variable varname "varlabel"</code>, give a label to <code>age</code> and to <code>dob</code>.</p>
+</section>
+<section id="add-value-labels" class="level3">
+<h3 class="anchored" data-anchor-id="add-value-labels">Add value labels</h3>
+<p>If you tabulate <code>sex</code>, you notice that it takes binary values: 0 for female and 1 for men. However, this is not super informative and we would like to add a label to the values such it prints male and female instead of 0 and 1.</p>
+<p>To do so, we define a label, to which we give a name, and we apply it to our values.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>label define sex_lab 0 "Female" 1 "Male"</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>label values sex sex_lab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, you can <code>browse</code> or <code>tabulate sex</code> to check if it worked.</p>
+</section>
+<section id="create-a-variable" class="level3">
+<h3 class="anchored" data-anchor-id="create-a-variable">Create a variable</h3>
+<p>So far, we only manipulated existing variables, but we want to create two new variables.</p>
+<p>The first one is a dummy variable (ie, takes 0 or 1) for race. Using the function <code>generate</code> and a <code>if</code> statement, we can build it.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>generate race_dummy = . // Create an empty variable</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>replace race_dummy = 1 if race == "White" // Replace if white</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>replace race_dummy = 0 if race == "Black" // Replace if black</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="make-a-grouping-variable-1" class="level3">
+<h3 class="anchored" data-anchor-id="make-a-grouping-variable-1">Make a grouping variable #1</h3>
+<p>The variable <code>chol</code> has a high heterogeneity:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>. sum chol</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="in">    Variable |        Obs        Mean    Std. dev.       Min        Max</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>-------------+---------------------------------------------------------</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        chol |      1,266    216.4415    46.84972         89        426</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let’s imagine we want to create a grouping variable with the cholesterol concentration rounded to the nearest 10. We have two options: using <strong>a loop</strong> or a built-in function.</p>
+<p>The built-in function is <code>gen floored_chol = floor(chol/10)*10</code>. The loop looks like that:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>gen floored_chol = .</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>forval x = 80(10)420{</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    replace floored_chol = <span class="in">`x' if inrange(chol,`</span>x',`x' + 9)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let’s break it down:</p>
+<ul>
+<li>Generate an empty numeric variable</li>
+<li><code>forval x = 80(10)420{</code> initializes the loop, where the running variable <code>x</code> goes from 80 to 420 with a step of 10</li>
+<li><code>replace floored_chol = `x' if inrange(chol,`x',`x' + 9)</code> replaces the values in <code>floored_chol</code> under a condition</li>
+<li>This condition is such that <code>chol</code> is in the range of x and x+9</li>
+</ul>
+<p>Two remarks:</p>
+<ol type="1">
+<li>Is <code>inrange()</code> equivalent to <code>x &gt; chol &gt; x + 9</code> or <code>x &gt;= chol &gt;= x + 9</code></li>
+<li>What is the most efficient approach?</li>
+</ol>
+</section>
+<section id="make-a-grouping-variable-2" class="level3">
+<h3 class="anchored" data-anchor-id="make-a-grouping-variable-2">Make a grouping variable #2</h3>
+<p>Now let’s imagine we want to make a grouping variable that is equal to 1 if the weight is greater than the mean and 0 otherwise.</p>
+<p>To do so, we can do it in three steps:</p>
+<ol type="1">
+<li>Compute the mean of <code>weight</code></li>
+<li>Generate a column containing the mean of <code>weight</code></li>
+<li>Generate a column with the aforementionned dummy variable</li>
+</ol>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Do the exercise above. Hint: use <code>egen new_var = mean(var)</code> to do.</p>
+</div>
+</div>
+</section>
+<section id="make-a-grouping-variable-3" class="level3">
+<h3 class="anchored" data-anchor-id="make-a-grouping-variable-3">Make a grouping variable #3</h3>
+<p>Last but not least, we may want to assess if the individual has a cholesterol concentration higher than the 3rd quartile of <em>her own age class</em>.</p>
+<p>To do so, we introduce the syntax: <code>by()</code>, which allows to compute statistics by group. It can be used in two ways:</p>
+<ul>
+<li>Either as an option: <code>function var, by(sex)</code></li>
+<li>Either in a prefix, with a sort command: <code>by sex, sort: function var</code></li>
+</ul>
+<p>I prefer the second option as it is more flexible in more advanced use we will eventually see.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Create the aforementioned variable.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="a-word-on-locals" class="level2">
+<h2 class="anchored" data-anchor-id="a-word-on-locals">A word on locals</h2>
+<p>Throughout our use of Stata, we are going to use <code>locals</code>. These are object that are stored in the memory of Stata right after certain commands are ran and can be called in code.</p>
+<p>The most common use of locals is after a <code>summarize var, detail</code> command is ran. If you check at the end of the help of <code>summarize</code>, you see that many results are stored. You can called those stored results within the next run-down of code.</p>
+<p>Hence, for our variable above or below the mean it becomes very handy:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>qui sum weight, d</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>gen weight_abvmean = weight &gt; `r(mean)' </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Notice the little trick here. For dummary variable, I directly put the condition to have 1 if true and 0 otherwise.</p>
+<p>We could have used the local in the loop as well:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>use https://www.stata.com/users/youtube/rawdata.dta, clear</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>destring chol, replace</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>cap drop floored_chol</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>gen floored_chol = .</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>qui sum chol, d</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>local min_chol = floor(r(min)/10)*10</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>local max_chol = ceil(r(max)/10)*10</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>local step = 10</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>forval x = <span class="in">`min_chol'(`</span>step')`max_chol'{</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    qui replace floored_chol = <span class="in">`x' if inrange(chol,`</span>x',`x'+9)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Altough it seems a bit more challenging, it ensures a large flexibility.</p>
+</section>
+<section id="more-on-loops" class="level2">
+<h2 class="anchored" data-anchor-id="more-on-loops">More on loops</h2>
+<p>Loops are extremely common in Stata. We saw the most simple loops: the ones that run through numbers with specific steps.</p>
+<p>However, a loop can run through other objects, and especially lists. For instance, you can run a loop across variables:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>foreach x of varlist id-chol{</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    your code ...</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can run through any types of list:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>foreach x in "a b c"{</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    your code ...</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="locals-vs.-globals" class="level2">
+<h2 class="anchored" data-anchor-id="locals-vs.-globals">Locals vs.&nbsp;globals</h2>
+<p>As mentioned earlier locals are stored temporarily right after the code has ran. If you want to store something for a longer period, you can create a global using <code>global gl_name = xxx</code>.</p>
+<p>For instance, I like to create a global containing the path of my working directory: <code>global path = "C:/Users/mateomoglia/..."</code>. Hence, I can call it later on the the <code>$path</code> symbol.</p>
+<p>For instance, we can create a global <code>global sexes = "Male Female"</code> and use it in a loop:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>foreach x of global sexes{</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    some code ...</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="manipulate-string-variables" class="level2">
+<h2 class="anchored" data-anchor-id="manipulate-string-variables">Manipulate string variables</h2>
+<p>Manipulate string variables is extremely useful. In the dataset on health, we have the column containing the date of birth.</p>
+<section id="extract-letters" class="level3">
+<h3 class="anchored" data-anchor-id="extract-letters">Extract letters</h3>
+<p>Using the function <code>substr(var,pos_start,pos_end)</code>, we can extract the first three letters of the month of birth. Using <code>touuper(var)</code>, you can put those three letters in capital letters, in accordance of the standard ISO practice</p>
+</section>
+<section id="extract-words" class="level3">
+<h3 class="anchored" data-anchor-id="extract-words">Extract words</h3>
+<p>Instead of extracting the first three letters, let’s imagine we want to extract the first word. Because words are separated by spaces, we need to use <code>substr(dob,1,position of the space - 1)</code>. To know the position of the space, we use <code>strpos(dob," ")</code>.</p>
+</section>
+</section>
+<section id="database-size-manipulation" class="level2">
+<h2 class="anchored" data-anchor-id="database-size-manipulation">Database size manipulation</h2>
+<p>For this part, we are going to use the built-in <code>uselifeexp.dta</code> database. First, we describe the data. We have, per year, the life expectancy for the overall population LE, and then the LE by gender, race, and gender-race.</p>
+<section id="reshaping" class="level3">
+<h3 class="anchored" data-anchor-id="reshaping">Reshaping</h3>
+<p>The dataset is wide: for each ID (here the year) we have several variables. Let’s assume we want to make it long, having a same ID repeated several time (one for each type).</p>
+<p>In Stata, this operation is called reshaping. A lot of memes have been made about it because no one knows how to do it without seeking for help.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rename le le_all // Otherwise, the variable is already defined</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>reshape long le@, i(year) j(type) string</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The syntax is simple:</p>
+<ul>
+<li><code>reshape long</code> if we want to do wide &gt; long and <code>reshape wide</code> to do long &gt; wide.</li>
+<li>The <code>@</code> indicates the function the starting position of the suffix</li>
+<li>The option <code>i()</code> contains the ID variables, which are not going to change</li>
+<li>The option <code>j()</code> is the name of the newly created variable (here the one that will contain the type)</li>
+<li>The option <code>string</code> is needed if the suffix contains letters</li>
+</ul>
+<p>In the end, we obtain three columns: <code>year</code>, <code>le</code> containing the value for LE, and <code>type</code> with the associated type.</p>
+</section>
+<section id="collapsing" class="level3">
+<h3 class="anchored" data-anchor-id="collapsing">Collapsing</h3>
+<p>Now, let’s say we want to compute the average life expectancy by group and by decade. First, we create the decade variable: <code>gen decade = floor(year/10)*10</code>. Then, we use the super useful function <code>collapse (mean) le, by(decade type)</code>.</p>
+<p>Check the documentation for the function to see all you can do with it!!</p>
+</section>
+<section id="mergingappending" class="level3">
+<h3 class="anchored" data-anchor-id="mergingappending">Merging/Appending</h3>
+<p>As we noticed, you can open only one dataset at a time in Stata. To join two or more datasets, two options exist:</p>
+<section id="merging" class="level4">
+<h4 class="anchored" data-anchor-id="merging">Merging</h4>
+<p>The syntax is `merge m:m common_var, using “/path/to/the/merged/dataset”.</p>
+<p>The merged dataset has to be in <code>.dta</code> format and contains the specified common variables (at least one) and no other conflicting variables.</p>
+<p>Several joints exist:</p>
+<ul>
+<li><code>1:1</code>: exactly one obs. in <code>df1</code> will be merged to exactly one obs. in <code>df2</code></li>
+<li><code>1:m</code> and <code>m:1</code>: one obs. can be matched to several in the other dataset</li>
+<li><code>m:m</code>: the most flexible and less precise, any obs. can be matched with any obs.</li>
+</ul>
+<p><code>merge</code> will create a new column <code>_merge</code> (name can be changed with the option <code>gen(name_of_merge_column)</code>) that tags observations that were merged and those unmerged from the master and from the merged datasets.</p>
+<p>An exercise will arrive to try the command.</p>
+</section>
+<section id="appending" class="level4">
+<h4 class="anchored" data-anchor-id="appending">Appending</h4>
+<p>The syntax `append using “/path/to/the/appended/dataset”. It stacks two datasets one over the other. They need to have the same column names. If it is not the case: the missing column is filled with NAs.</p>
+</section>
+</section>
+</section>
+<section id="store-temporary-datasets" class="level2">
+<h2 class="anchored" data-anchor-id="store-temporary-datasets">Store temporary datasets</h2>
+<p>From times to times, it is handy to store in the cache memory the dataset to call it later.</p>
+<section id="use-a-tempfile" class="level3">
+<h3 class="anchored" data-anchor-id="use-a-tempfile">Use a <code>tempfile</code></h3>
+<p>Let’s say you want to create a subset of a dataset, save it temporarily (instead of saving it on your hard disk), and then append it to another dataset.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>use data.dta, clear</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>drop if gender == 0</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="in">    /*--- some data cleaning ---*/</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>tempfile temp_file</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>save `temp_file'</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>use data.dta, clear</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>drop if gender == 1</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="in">    /*--- some data cleaning ---*/</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>append using `temp_file'</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="use-a-preserve" class="level3">
+<h3 class="anchored" data-anchor-id="use-a-preserve">Use a preserve</h3>
+<p>In this case, let’s say you want to compute an intermediary summary statistics, save it, and go back to the “main” dataset. Then, you can preserve your data, do some computations, and then restore it:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>use auto.dta, clear</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="in">    /*--- some code ---*/</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>preserve</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>collapse price, by(foreign)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>save $path/temp/price_by_foreign.dta, replace</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>restore</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="in">    /*--- continue the code ---*/</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© Copyright 2026, Mateo Moglia</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Built with <a href="https://quarto.org/">Quarto</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
