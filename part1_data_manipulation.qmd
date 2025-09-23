@@ -58,7 +58,7 @@ We also want to drop if `dob` is missing, hence: `drop if missing(dob)`. Finally
 
 As notice earlier, the cholesterol concentration is in string whereas it should be in numeric.
 
-`destring cholesterol, replace` or create a new variable with `, gen(new_var)`.
+`destring chol, replace` or create a new variable with `, gen(new_var)`.
 
 ### Add labels
 
@@ -234,7 +234,7 @@ Manipulate string variables is extremely useful. In the dataset on health, we ha
 
 ### Extract letters
 
-Using the function `substr(var,pos_start,pos_end)`, we can extract the first three letters of the month of birth. Using `touuper(var)`, you can put those three letters in capital letters, in accordance of the standard ISO practice
+Using the function `substr(var,pos_start,pos_end)`, we can extract the first three letters of the month of birth. Using `strupper(var)`, you can put those three letters in capital letters, in accordance of the standard ISO practice
 
 ### Extract words
 

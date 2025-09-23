@@ -7,15 +7,15 @@ toc-title: ""
 toc-location: right
 ---
 
-In this part, we open Stata and familiarize with the software. Stata is a proprietary software, first released in 1985. As of today, Stata version is Stata 19. 
+In this part, we open Stata and familiarize with the software. Stata is a proprietary software, first released in 1985. As of today, Stata version is Stata 19.
 
 ## General philosophy
 
 The idea is to open one dataset at a time and apply a number of commands on this dataset. As opposed to object-based languages, Stata can deal with only one dataset at a time.
 
-Code is written on a script called a **do-file**. It can be ran entirely or line by line. Each line is a different command. 
+Code is written on a script called a **do-file**. It can be ran entirely or line by line. Each line is a different command.
 
-They key advantage of Stata is the efficiency to run econometrics tasks as opposed to R and Python. Personnaly, I find it more intuitive. On top of that, it is easier to export output in `.tex` or image formats. 
+They key advantage of Stata is the efficiency to run econometrics tasks as opposed to R and Python. Personnaly, I find it more intuitive. On top of that, it is easier to export output in `.tex` or image formats.
 
 ## Best practice
 
@@ -53,7 +53,7 @@ Here we are going to work in `~/courses/2026_eco51423ep/`. This folder may (and 
 
 ### Naming convention
 
-A typical tip is to choose simple and short titles for the files and the scripts. For instance, this file is named `part0_r.qmd`. Your code can be named `code_tutorial.R`. It should be self-explanatory.
+A typical tip is to choose simple and short titles for the files and the scripts. For instance, this file is named `part0_r.qmd`. Your code can be named `code_tutorial.do`. It should be self-explanatory.
 
 ::: callout-tip
 Avoid at all cost to use spaces or special characters in your file names. Prefer instead an underscore.
@@ -77,7 +77,7 @@ We open Stata and open our first do-file. We provide some indication on what we 
 
 To comment a line we can use `*` or `//`. To comment a block of code, you have to put it between `/* The code you which to comment out */`.
 
-````markdown
+``` markdown
 /*_______________________________________
 
     This code aims to open the auto dataset and
@@ -87,36 +87,37 @@ _______________________________________*/
 
     * Load the data
     sysuse auto.dta // Open the auto dataset
-````
+```
 
 ### Run lines
 
 To run the do-files, you can either select all lines and press `CTRL + D` or select a line and run the latter command.
 
-By default Stata is going to print every output you run. If you to run a line but make the output salient (for instance because you want to extract a result but do not need to see the output to keep your log clean), you can start the line with `quietly: ` or put the whole code in brackets: `quietly{ a long code bunch }`. 
+By default Stata is going to print every output you run. If you to run a line but make the output salient (for instance because you want to extract a result but do not need to see the output to keep your log clean), you can start the line with `quietly:` or put the whole code in brackets: `quietly{ a long code bunch }`.
 
-### Logs 
+### Logs
 
 You will see that when running the lines of code, output will be printed in the main window. To keep track of the output and code producing the output, you may want to create a log file.
 
-:::callout-tip
+::: callout-tip
 ## Tip
-To seek for help, you can type `help command` in the Console. For instance, for log, you can write `help log`. 
+
+To seek for help, you can type `help command` in the Console. For instance, for log, you can write `help log`.
 :::
 
 ### Syntax
 
 The syntax is -almost- always the same in State:
 
-````markdown
+``` markdown
 function var, options
-````
+```
 
-You start off with the name of the function, for instance `sysuse`, then the name of the variable(s) (or the object, the path, etc.), here `auto.dta`, and you finish with the potential options after a comma. 
+You start off with the name of the function, for instance `sysuse`, then the name of the variable(s) (or the object, the path, etc.), here `auto.dta`, and you finish with the potential options after a comma.
 
-It is also worth noting that most Stata functions have shortcuts. For instance, the function `regress`, which, as you may have understood, is useful to regress works also with `reg`. The function `summary` can be shortcut with `su`. 
+It is also worth noting that most Stata functions have shortcuts. For instance, the function `regress`, which, as you may have understood, is useful to regress works also with `reg`. The function `summary` can be shortcut with `su`.
 
-It goes the same with some options and for most variables names, as long as there is no ambiguity. 
+It goes the same with some options and for most variables names, as long as there is no ambiguity.
 
 Lastly, you can use `*` as a joker for a letter in a variable names. Let's say you have columns `popmun2007`, `popmun2008`, etc. until `popmun2020`. If you want to summarize those 13 variables you can:
 
