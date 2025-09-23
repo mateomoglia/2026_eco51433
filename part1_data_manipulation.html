@@ -290,7 +290,7 @@ Exercise
 <section id="change-data-format" class="level3">
 <h3 class="anchored" data-anchor-id="change-data-format">Change data format</h3>
 <p>As notice earlier, the cholesterol concentration is in string whereas it should be in numeric.</p>
-<p><code>destring cholesterol, replace</code> or create a new variable with <code>, gen(new_var)</code>.</p>
+<p><code>destring chol, replace</code> or create a new variable with <code>, gen(new_var)</code>.</p>
 </section>
 <section id="add-labels" class="level3">
 <h3 class="anchored" data-anchor-id="add-labels">Add labels</h3>
@@ -438,7 +438,7 @@ Exercise
 <p>Manipulate string variables is extremely useful. In the dataset on health, we have the column containing the date of birth.</p>
 <section id="extract-letters" class="level3">
 <h3 class="anchored" data-anchor-id="extract-letters">Extract letters</h3>
-<p>Using the function <code>substr(var,pos_start,pos_end)</code>, we can extract the first three letters of the month of birth. Using <code>touuper(var)</code>, you can put those three letters in capital letters, in accordance of the standard ISO practice</p>
+<p>Using the function <code>substr(var,pos_start,pos_end)</code>, we can extract the first three letters of the month of birth. Using <code>strupper(var)</code>, you can put those three letters in capital letters, in accordance of the standard ISO practice</p>
 </section>
 <section id="extract-words" class="level3">
 <h3 class="anchored" data-anchor-id="extract-words">Extract words</h3>
@@ -623,7 +623,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
+      var filterRegex = new RegExp("https:\/\/mateomoglia\.github\.io\/2026_eco51433\/");
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
